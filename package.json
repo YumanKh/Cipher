@@ -2,10 +2,13 @@
   "name": "cipher",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "prisma skills sync || exit 0"
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "dotenv -e .env.test -- vitest",
+    "migrate:test": "dotenv -e .env.test -- prisma migrate deploy"
   },
   "repository": {
     "type": "git",
@@ -14,7 +17,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/YumanKh/Cipher/issues"
   },
