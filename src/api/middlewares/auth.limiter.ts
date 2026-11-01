@@ -10,3 +10,13 @@ export const registerLimiter = ratelimit({
 
     skip: () => config.NODE_ENV === 'test'
 });
+
+export const loginLimiter = ratelimit({
+    windowMs: 15 * 60 * 1000, // 5 minutes
+    max: 5,
+    message: 'Too many login attempts, try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+
+    skip: () => config.NODE_ENV === 'test'
+});
