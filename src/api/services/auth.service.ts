@@ -1,5 +1,6 @@
-import { createUser } from "../repositories/auth.repository.js";
+import { createUser, getUserByEmail } from "../repositories/auth.repository.js";
 import { issueToken, passwordCrypting } from "../../lib/token.js";
+import bcrypt from "bcryptjs";
 
 export const registerUser = async (data: {
     name: string;
@@ -20,4 +21,22 @@ export const registerUser = async (data: {
 
     const tokens = await issueToken(user.id);
     return { user, tokens };
+};
+
+const DUMMY_HASH = bcrypt.hashSync("dummy-password", 10);
+
+export const loginUser = async (email: string, authValue: string) => {
+    const user = await getUserByEmail(email);
+    if (!user) {
+        await bcrypt.compare(authValue, DUMMY_HASH);
+        return null;
+    }
+
+    const isPasswordValid = await bcrypt.compare(authValue, user.hashedPassword);
+    if (!isPasswordValid) {
+        return null;
+    }
+
+    const tokens = await issueToken(user.id);
+    return { user: { id: user.id, name: user.name, email: user.email, cryptingKey: user.cryptingKey, kdfSalt: user.kdfSalt }, tokens };
 };
