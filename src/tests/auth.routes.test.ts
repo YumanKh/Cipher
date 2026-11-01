@@ -1,0 +1,77 @@
+import supertest from "supertest";
+import app from "../app.js";
+import { describe, it, expect, beforeEach } from "vitest";
+import { prisma } from "../lib/prisma.js";
+import { config } from "../config.js";
+
+if (!config.DATABASE_URL?.includes("cipher_test")) {
+    throw new Error("Tests must run on the test database");
+}
+
+beforeEach(async () => {
+    await prisma.refreshToken.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.note.deleteMany();
+});
+
+describe("/auth/register", () => {
+    it("should register a new user successfully", async () => {
+        const response = await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        expect(response.status).toBe(201);
+        expect(response.body.user).toHaveProperty("id");
+        expect(response.body.user).toHaveProperty("name");
+        expect(response.body.user).toHaveProperty("email");
+        expect(response.body.user.hashedPassword).toBeUndefined();
+        expect(response.body.tokens.refreshToken).toBeDefined();
+        expect(response.body.tokens.accessToken).toBeDefined();
+    })
+
+    it("should fail to register a user with missing fields", async () => {
+        const response = await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+        });
+
+        expect(response.status).toBe(400);
+    });
+
+    it("should fail to register a user with incorrect field types", async () => {
+        const response = await supertest(app).post("/auth/register").send({
+            name: 123,
+            email: "testuser@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        expect(response.status).toBe(400);
+    });
+
+    it("should fail to register a user with duplicate email", async () => {
+        await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+        const response = await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+        
+        expect(response.status).toBe(409);
+    });
+
+    it.todo("should handle server errors gracefully");
+});
