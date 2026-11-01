@@ -21,7 +21,7 @@ export const register = async (req: Request, res: Response) => {
             res.status(409).json({ error: "User with this email already exists" });
             return;
         }
-        console.error(error);
         res.status(500).json({ error: "Internal server error" });
+        return;
     }
 };

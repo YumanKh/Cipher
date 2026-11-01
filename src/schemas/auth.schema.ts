@@ -7,3 +7,8 @@ export const registerSchema = z.object({
     cryptingKey: z.string().min(1),
     kdfSalt: z.string().min(1)
 })
+
+export const loginSchema = z.object({
+    email: z.string().email().toLowerCase(),
+    authValue: z.string().min(1)
+});
