@@ -176,6 +176,26 @@ describe("/auth/logout", () => {
         expect(response.body.message).toBe("User logged out successfully");
     });
 
+    it("should successfully logout a user with a valid refresh token", async () => {
+        const loginResponse = await supertest(app).post("/auth/register").send({
+                name: "Test User",
+                email: "testuser@example.com",
+                authValue: "password123",
+                cryptingKey: "key123",
+                kdfSalt: "salt123",
+            });
+
+            const response = await supertest(app).post("/auth/logout").send({
+                refreshToken: loginResponse.body.tokens.refreshToken,
+            });
+
+            const bodyCount = await prisma.refreshToken.count();
+            
+            expect(response.status).toBe(200);
+            expect(bodyCount).toBe(0);
+            expect(response.body.message).toBe("User logged out successfully");
+        });
+
     it("should fail to logout a user with missing fields", async () => {
         const response = await supertest(app).post("/auth/logout").send({});
 
