@@ -32,3 +32,9 @@ export const getUserByEmail = async (email: string) => {
         },
     });
 };
+
+export const deleteRefreshToken = async (hashedToken: string) => {
+    return prisma.refreshToken.deleteMany({
+        where: { hashedToken },
+    });
+};
