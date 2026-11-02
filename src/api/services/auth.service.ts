@@ -1,5 +1,5 @@
-import { createUser, getUserByEmail } from "../repositories/auth.repository.js";
-import { issueToken, passwordCrypting } from "../../lib/token.js";
+import { createUser, deleteRefreshToken, getUserByEmail } from "../repositories/auth.repository.js";
+import { hashToken, issueToken, passwordCrypting } from "../../lib/token.js";
 import bcrypt from "bcryptjs";
 
 export const registerUser = async (data: {
@@ -40,3 +40,8 @@ export const loginUser = async (email: string, authValue: string) => {
     const tokens = await issueToken(user.id);
     return { user: { id: user.id, name: user.name, email: user.email, cryptingKey: user.cryptingKey, kdfSalt: user.kdfSalt }, tokens };
 };
+
+export const logoutUser = async (refreshToken: string) => {
+    const hashedToken = hashToken(refreshToken);
+    await deleteRefreshToken(hashedToken);
+}
