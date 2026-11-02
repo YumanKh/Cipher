@@ -154,3 +154,35 @@ describe("/auth/login", () => {
 
     it.todo("should handle server errors gracefully");
 });
+
+describe("/auth/logout", () => {
+    it("should successfully logout a user", async () => {
+        await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        await supertest(app).post("/auth/login").send({
+            email: "testuser@example.com",
+            authValue: "password123",
+        });
+
+        const response = await supertest(app).post("/auth/logout").send({
+            refreshToken: "valid-refresh-token",
+        });
+
+        expect(response.status).toBe(200);
+        expect(response.body.message).toBe("User logged out successfully");
+    });
+
+    it("should fail to logout a user with missing fields", async () => {
+        const response = await supertest(app).post("/auth/logout").send({});
+
+        expect(response.status).toBe(400);
+    });
+
+    it.todo("should handle server errors gracefully");
+});
