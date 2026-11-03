@@ -3,7 +3,8 @@ import { login, logout, register } from "../controllers/auth.controller.js";
 import { refreshSchema } from "../../schemas/auth.schema.js";
 import { registerLimiter, loginLimiter } from "../middlewares/auth.limiter.js";
 
-import { hashToken, issueToken } from "../../lib/token.js";
+import { hashToken } from "../../lib/token.js";
+import { issueToken } from "../services/auth.service.js";
 import { prisma } from "../../lib/prisma.js";
 
 const router = express.Router();

@@ -12,7 +12,7 @@ export const registerLimiter = ratelimit({
 });
 
 export const loginLimiter = ratelimit({
-    windowMs: 15 * 60 * 1000, // 5 minutes
+    windowMs: 15 * 60 * 1000, // 15 minutes
     max: 5,
     message: 'Too many login attempts, try again later.',
     standardHeaders: true,

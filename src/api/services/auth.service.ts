@@ -1,5 +1,6 @@
-import { createUser, deleteRefreshToken, getUserByEmail } from "../repositories/auth.repository.js";
-import { hashToken, issueToken, passwordCrypting } from "../../lib/token.js";
+import { createRefreshToken, createUser, deleteRefreshToken, getUserByEmail } from "../repositories/auth.repository.js";
+import { hashToken, passwordHashing, signAccessToken } from "../../lib/token.js";
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
 
 export const registerUser = async (data: {
@@ -9,7 +10,7 @@ export const registerUser = async (data: {
     cryptingKey: string;
     kdfSalt: string;
 }) => {
-    const hashedPassword = await passwordCrypting(data.authValue);
+    const hashedPassword = await passwordHashing(data.authValue);
     
     const user = await createUser({
         name: data.name,
@@ -44,4 +45,25 @@ export const loginUser = async (email: string, authValue: string) => {
 export const logoutUser = async (refreshToken: string) => {
     const hashedToken = hashToken(refreshToken);
     await deleteRefreshToken(hashedToken);
+}
+
+const REFRESH_TOKEN_DURATION_MS = 30 * 24 * 60 * 60 * 1000;
+
+export const issueToken = async (userId: number) => {
+    const accessToken = signAccessToken(userId);
+    const refreshToken = crypto.randomBytes(48).toString("hex");
+
+    const tokens = await    createRefreshToken(hashToken(refreshToken), new Date(Date.now() + REFRESH_TOKEN_DURATION_MS), userId);
+
+    /*
+        await prisma.refreshToken.create({
+        data: {
+            hashedToken: hashToken(refreshToken),
+            expiresAt: new Date(Date.now() + REFRESH_TOKEN_DURATION_MS),
+            userId,
+        },
+    });
+    */
+
+    return { accessToken: accessToken, refreshToken: refreshToken };
 }
