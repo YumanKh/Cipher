@@ -1,4 +1,4 @@
-import { createRefreshToken, createUser, deleteRefreshToken, getUserByEmail } from "../repositories/auth.repository.js";
+import { createRefreshToken, createUser, deleteRefreshToken, getUserByEmail, findRefreshToken, deleteRefreshTokenById } from "../repositories/auth.repository.js";
 import { hashToken, passwordHashing, signAccessToken } from "../../lib/token.js";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
@@ -55,15 +55,23 @@ export const issueToken = async (userId: number) => {
 
     const tokens = await    createRefreshToken(hashToken(refreshToken), new Date(Date.now() + REFRESH_TOKEN_DURATION_MS), userId);
 
-    /*
-        await prisma.refreshToken.create({
-        data: {
-            hashedToken: hashToken(refreshToken),
-            expiresAt: new Date(Date.now() + REFRESH_TOKEN_DURATION_MS),
-            userId,
-        },
-    });
-    */
-
     return { accessToken: accessToken, refreshToken: refreshToken };
 }
+
+export const refreshUserToken = async (refreshToken: string) => {
+    const hashedToken = hashToken(refreshToken);
+    const token = await findRefreshToken(hashedToken);
+
+    if (!token) {
+        return null;
+    }
+
+    if (token.expiresAt.getTime() < Date.now()) {
+        await deleteRefreshTokenById(token.id);
+        return null;
+    }
+
+    await deleteRefreshTokenById(token.id);
+    const { refreshToken: newRefreshToken, accessToken } = await issueToken(token.userId);
+    return { tokens: { accessToken: accessToken, refreshToken: newRefreshToken } };
+};
