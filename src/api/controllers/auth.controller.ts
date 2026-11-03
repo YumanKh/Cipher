@@ -1,6 +1,6 @@
-import { registerUser, loginUser, logoutUser } from "../services/auth.service.js";
+import { registerUser, loginUser, logoutUser, refreshUserToken } from "../services/auth.service.js";
 import { Request, Response } from "express";
-import { loginSchema, registerSchema, logoutSchema } from "../../schemas/auth.schema.js";
+import { loginSchema, registerSchema, logoutSchema, refreshSchema } from "../../schemas/auth.schema.js";
 import { Prisma } from "@prisma/client";
 
 export const register = async (req: Request, res: Response) => {
@@ -59,6 +59,28 @@ export const logout = async (req: Request, res: Response) => {
     try {
         await logoutUser(refreshToken);
         res.status(200).json({ message: "User logged out successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const refresh = async (req: Request, res: Response) => {
+    const result = refreshSchema.safeParse(req.body);
+    if (!result.success) {
+        res.status(400).json({ error: "Invalid request body" });
+        return;
+    }
+
+    const refreshToken = result.data.refreshToken;
+
+    try {
+        const refreshedTokens = await refreshUserToken(refreshToken);
+        if (!refreshedTokens) {
+            res.status(401).json({ error: "Invalid or expired refresh token" });
+            return;
+        }
+
+        res.status(200).json({ tokens: refreshedTokens.tokens });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
