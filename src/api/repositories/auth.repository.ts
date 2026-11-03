@@ -38,3 +38,13 @@ export const deleteRefreshToken = async (hashedToken: string) => {
         where: { hashedToken },
     });
 };
+
+export const createRefreshToken = async (hashedToken: string, expiresAt: Date, userId: number) => {
+    return prisma.refreshToken.create({
+        data: {
+            hashedToken,
+            expiresAt,
+            userId,
+        },
+    });
+};
