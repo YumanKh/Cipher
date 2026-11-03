@@ -204,3 +204,62 @@ describe("/auth/logout", () => {
 
     it.todo("should handle server errors gracefully");
 });
+
+describe("/auth/refresh", () => {
+    it("should successfully refresh tokens with a valid refresh token", async () => {
+        const registerResponse = await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        const response = await supertest(app).post("/auth/refresh").send({
+            refreshToken: registerResponse.body.tokens.refreshToken,
+        });
+
+        expect(response.status).toBe(200);
+        expect(response.body.tokens).toHaveProperty("accessToken");
+        expect(response.body.tokens).toHaveProperty("refreshToken");
+    });
+
+    it("should fail to refresh tokens with an invalid refresh token", async () => {
+        const response = await supertest(app).post("/auth/refresh").send({
+            refreshToken: "invalid-refresh-token",
+        });
+
+        expect(response.status).toBe(401);
+        expect(response.body.error).toBe("Invalid or expired refresh token");
+    });
+
+    it("should fail to refresh tokens with an already used refresh token", async () => {
+         const registerResponse = await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        const refreshResponse = await supertest(app).post("/auth/refresh").send({
+            refreshToken: registerResponse.body.tokens.refreshToken,
+        });
+
+        const response = await supertest(app).post("/auth/refresh").send({
+            refreshToken: registerResponse.body.tokens.refreshToken,
+        });
+
+        expect(refreshResponse.status).toBe(200)
+        expect(response.status).toBe(401);
+        expect(response.body.error).toBe("Invalid or expired refresh token");
+    });
+
+    it("should fail to refresh tokens with missing fields", async () => {
+        const response = await supertest(app).post("/auth/refresh").send({});
+
+        expect(response.status).toBe(400);
+    });
+
+    it.todo("should handle server errors gracefully");
+});
