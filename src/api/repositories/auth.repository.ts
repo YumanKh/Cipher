@@ -48,3 +48,20 @@ export const createRefreshToken = async (hashedToken: string, expiresAt: Date, u
         },
     });
 };
+
+export const findRefreshToken = async (hashedToken: string) => {
+    return prisma.refreshToken.findUnique({
+        where: { hashedToken },
+        select: {
+            id: true,
+            userId: true,
+            expiresAt: true,
+        },
+    });
+};
+
+export const deleteRefreshTokenById = async (id: number) => {
+    return prisma.refreshToken.deleteMany({
+        where: { id },
+    });
+};
