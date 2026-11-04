@@ -1,17 +1,9 @@
-import express from "express";
-import { prisma } from "../../lib/prisma.js";
+import express from "express";;
 import { requireAuth } from "../middlewares/requireAuth.js";
+import { getNotes } from "../controllers/notes.controller.js";
 
 const router = express.Router();
 
-router.get("/", requireAuth,
-     async (req, res) => {
-  try {
-    const notes = await prisma.note.findMany();
-    res.status(200).json(notes);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch notes" });
-  }
-});
+router.get("/", requireAuth, getNotes);
 
 export default router;
