@@ -35,6 +35,6 @@ export const createNote = async (req: Request, res: Response) => {
         const note = await createNoteForUser(userId, newNote.data.title, newNote.data.content);
         res.status(201).json({ note: { id: note.id, title: note.title, content: note.content } });
     } catch (error) {
-        res.status(500).json({ error: "Failed to create note" });
+        res.status(500).json({ error: "Internal server error" });
     }
 };
