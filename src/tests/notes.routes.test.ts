@@ -14,7 +14,7 @@ beforeEach(async () => {
     await prisma.note.deleteMany();
 });
 
-describe("notes/", () => {
+describe("GET /notes", () => {
     it("should return 401 if user ID is not provided", async () => {
         const response = await supertest(app).get("/notes");
         expect(response.status).toBe(401);
@@ -46,3 +46,56 @@ describe("notes/", () => {
     it.todo("should handle server errors gracefully");
 });
 
+describe("POST /notes", () => {
+    it("should return 401 if user ID is not provided", async () => {
+        const response = await supertest(app).post("/notes").send({
+            title: "Test Note",
+            content: "This is a test note",
+        });
+        expect(response.status).toBe(401);
+        expect(response.body).toEqual({ error: "Unauthorized" });
+    });
+
+    it("should return 400 if title or content is missing", async () => {
+        const user = await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        const token = user.body.tokens.accessToken;
+        const response = await supertest(app).post("/notes").set("Authorization", `Bearer ${token}`).send({
+            title: "Test Note",
+        });
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({ error: "Title and content are required" });
+    });
+
+    it("should return 201 and the created note for a valid user", async () => {
+        const user = await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        const token = user.body.tokens.accessToken;
+        const response = await supertest(app).post("/notes").set("Authorization", `Bearer ${token}`).send({
+            title: "Test Note",
+            content: "This is a test note",
+        });
+        expect(response.status).toBe(201);
+        expect(response.body).toEqual({
+            note: {
+                id: expect.any(Number),
+                title: "Test Note",
+                content: "This is a test note",
+            },
+        });
+    });
+
+    it.todo("should handle server errors gracefully");
+});
