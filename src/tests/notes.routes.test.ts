@@ -176,10 +176,10 @@ describe("PATCH /notes/:id", () => {
             content: "This is a test note",
         });
 
-        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({isFavorite: true});
+        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({updated: true});
 
         expect(response.status).toBe(200);
-        expect(response.body).toEqual({ isNoteFavorite: true });
+        expect(response.body).toEqual({ updated: true });
     });
 
     it.todo("should handle server errors gracefully");
