@@ -1,4 +1,4 @@
-import { createNote, getNotesByUserId } from "../repositories/notes.repository.js"
+import { createNote, getNotesByUserId, changeNoteFavoriteStatus } from "../repositories/notes.repository.js"
 
 export const getNotesForUser = async (userId: number) => {
   return getNotesByUserId(userId);
@@ -7,3 +7,7 @@ export const getNotesForUser = async (userId: number) => {
 export const createNoteForUser = async (userId: number, title: string, content: string) => {
   return createNote(userId, title, content);
 };
+
+export const updateNoteFavoriteStatusForUser = async (userId: number, noteId: number, isFavorite: boolean) => {
+  return changeNoteFavoriteStatus(userId, noteId, isFavorite);
+}
