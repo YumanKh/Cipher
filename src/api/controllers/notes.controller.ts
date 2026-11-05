@@ -59,10 +59,11 @@ export const updateNoteFavoriteStatus = async (req: Request, res: Response) => {
 
     try {
         const results = await updateNoteFavoriteStatusForUser(userId, noteId.data.id, isFavorite.data.isFavorite);
-        if (!results) {
+        if (results.count === 0) {
             res.status(404).json({ error: "Note not found" });
-            return;
+            return null;
         }
+        
         res.status(200).json({ isNoteFavorite: isFavorite.data.isFavorite });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
