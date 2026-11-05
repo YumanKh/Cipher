@@ -5,8 +5,12 @@ export const createNoteSchema = z.object({
   content: z.string().min(1, "Content is required"),
 });
 
-export const favoritingNoteSchema = z.object({
-    isFavorite: z.boolean(),
+export const modifyNoteSchema = z.object({
+    isFavorite: z.boolean().optional(),
+    title: z.string().optional(),
+    content: z.string().optional(),
+}).refine((data) => Object.values(data).some((v) => v !== undefined), {
+    message: "At least one of field is required",
 });
 
 export const idParamsSchema = z.object({
