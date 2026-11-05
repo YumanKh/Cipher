@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { getNotesForUser, createNoteForUser, updateNoteFavoriteStatusForUser } from "../services/notes.service.js";
-import { createNoteSchema, favoritingNoteSchema, idParamsSchema } from "../../schemas/notes.schema.js";
+import { getNotesForUser, createNoteForUser, updateNoteContent } from "../services/notes.service.js";
+import { createNoteSchema, modifyNoteSchema, idParamsSchema } from "../../schemas/notes.schema.js";
 
 export const getNotes = async (req: Request, res: Response) => {
     const userId = req.userId;
@@ -39,10 +39,10 @@ export const createNote = async (req: Request, res: Response) => {
     }
 };
 
-export const updateNoteFavoriteStatus = async (req: Request, res: Response) => {
+export const updateNote = async (req: Request, res: Response) => {
     const userId = req.userId;
     const noteId = idParamsSchema.safeParse(req.params);
-    const isFavorite = favoritingNoteSchema.safeParse(req.body);
+    const updateData = modifyNoteSchema.safeParse(req.body);
 
     if (!userId) {
         res.status(401).json({ error: "User ID is required" });
@@ -52,19 +52,19 @@ export const updateNoteFavoriteStatus = async (req: Request, res: Response) => {
         res.status(400).json({ error: "Invalid note ID" });
         return;
     }
-    if (!isFavorite.success) {
-        res.status(400).json({ error: "Favorite status is required" });
+    if (!updateData.success) {
+        res.status(400).json({ error: "Invalid update data" });
         return;
     }
 
     try {
-        const results = await updateNoteFavoriteStatusForUser(userId, noteId.data.id, isFavorite.data.isFavorite);
-        if (results.count === 0) {
+        const results = await updateNoteContent(userId, noteId.data.id, updateData.data?.isFavorite, updateData.data?.title, updateData.data?.content);
+        if (!results) {
             res.status(404).json({ error: "Note not found" });
-            return null;
+            return;
         }
-        
-        res.status(200).json({ isNoteFavorite: isFavorite.data.isFavorite });
+
+        res.status(200).json({ updated: true });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
