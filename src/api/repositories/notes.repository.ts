@@ -16,12 +16,16 @@ export const createNote = async (userId: number, title: string, content: string)
   });
 };
 
-export const changeNoteFavoriteStatus = async (userId: number, noteId: number, isFavorite: boolean) => {
+export const modifyNoteContent = async (userId: number, noteId: number, isFavorite?: boolean, title?: string, content?: string) => {
   return prisma.note.updateMany({
     where: { 
       id: noteId,
       userId: userId,
     },
-    data: { isFavorite: isFavorite },
+    data: { 
+      isFavorite: isFavorite,
+      title: title,
+      content: content
+    },
   });
 }
