@@ -15,3 +15,13 @@ export const createNote = async (userId: number, title: string, content: string)
     }
   });
 };
+
+export const changeNoteFavoriteStatus = async (userId: number, noteId: number, isFavorite: boolean) => {
+  return prisma.note.updateMany({
+    where: { 
+      id: noteId,
+      userId: userId,
+    },
+    data: { isFavorite: isFavorite },
+  });
+}
