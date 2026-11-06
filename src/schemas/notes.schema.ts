@@ -1,14 +1,14 @@
 import { z } from "zod";
 
 export const createNoteSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  content: z.string().min(1, "Content is required"),
+  title: z.string().min(1, "Title is required").max(100, "Title is too long"),
+  content: z.string().min(1, "Content is required").max(500, "Content is too long"),
 });
 
 export const modifyNoteSchema = z.object({
     isFavorite: z.boolean().optional(),
-    title: z.string().optional(),
-    content: z.string().optional(),
+    title: z.string().min(1, "Title is required").max(100, "Title is too long").optional(),
+    content: z.string().min(1, "Content is required").max(500, "Content is too long").optional(),
 }).refine((data) => Object.values(data).some((v) => v !== undefined), {
     message: "At least one of field is required",
 });
