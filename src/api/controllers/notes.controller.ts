@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getNotesForUser, createNoteForUser, updateNoteContent } from "../services/notes.service.js";
+import { getNotesForUser, createNoteForUser, updateNoteContent, deleteNoteForUser } from "../services/notes.service.js";
 import { createNoteSchema, modifyNoteSchema, idParamsSchema } from "../../schemas/notes.schema.js";
 
 export const getNotes = async (req: Request, res: Response) => {
@@ -65,6 +65,32 @@ export const updateNote = async (req: Request, res: Response) => {
         }
 
         res.status(200).json({ updated: true });
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const deleteNote = async (req: Request, res: Response) => {
+    const userId = req.userId;
+    const noteId = idParamsSchema.safeParse(req.params);
+
+    if (!userId) {
+        res.status(401).json({ error: "User ID is required" });
+        return;
+    }
+    if (!noteId.success) {
+        res.status(400).json({ error: "Invalid note ID" });
+        return;
+    }
+
+    try {
+        const results = await deleteNoteForUser(userId, noteId.data.id);
+        if (!results) {
+            res.status(404).json({ error: "Note not found" });
+            return;
+        }
+
+        res.status(200).json({ deleted: true });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
