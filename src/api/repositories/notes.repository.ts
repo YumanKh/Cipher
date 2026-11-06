@@ -29,3 +29,12 @@ export const modifyNoteContent = async (userId: number, noteId: number, isFavori
     },
   });
 }
+
+export const deleteNote = async (userId: number, noteId: number) => {
+  return prisma.note.deleteMany({
+    where: {
+      id: noteId,
+      userId: userId,
+    }
+  });
+};
