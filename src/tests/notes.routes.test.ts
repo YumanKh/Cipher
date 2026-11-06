@@ -276,3 +276,97 @@ describe("PATCH /notes/:id", () => {
 
     it.todo("should handle server errors gracefully");
 });
+
+describe("DELETE /notes/:id", () => {
+    it("should return 401 for unauthenticated request", async () => {
+        const response = await supertest(app).delete(`/notes/1`);
+
+        expect(response.status).toBe(401);
+        expect(response.body).toEqual({ error: "Unauthorized" });
+    });
+
+    it("should return 400 for invalid note ID", async () => {
+        const user = await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        const response = await supertest(app).delete(`/notes/invalid`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`);
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({ error: "Invalid note ID" });
+    });
+
+    it("should return 404 if note is not found", async () => {
+        const user = await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+            title: "Test Note",
+            content: "This is a test note",
+        });
+
+        const response = await supertest(app).delete(`/notes/99999`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`);
+
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({ error: "Note not found" });
+    });
+
+    it("should return 404 when a user tries to delete a note they do not own", async () => {
+        const user1 = await supertest(app).post("/auth/register").send({
+            name: "User 1",
+            email: "user1@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        const user2 = await supertest(app).post("/auth/register").send({
+            name: "User 2",
+            email: "user2@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user1.body.tokens.accessToken}`).send({
+            title: "Test Note",
+            content: "This is a test note",
+        });
+
+        const response = await supertest(app).delete(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user2.body.tokens.accessToken}`);
+
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({ error: "Note not found" });
+    });
+
+    it("should return 200 for a valid note", async () => {
+        const user = await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+            authValue: "password123",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+            title: "Test Note",
+            content: "This is a test note",
+        });
+
+        const response = await supertest(app).delete(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({ deleted: true });
+    });
+
+    it.todo("should handle server errors gracefully");
+});
