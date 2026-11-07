@@ -14,6 +14,13 @@ export const modifyNoteSchema = z.object({
 }).refine(
   (data) => Object.values(data).some((v) => v !== undefined),
   { message: "At least one field is required" }
+).refine(
+  (data) => {
+    const touchesEncryptedData = data.title !== undefined || data.content !== undefined || data.iv !== undefined;
+    if (!touchesEncryptedData) return true;
+    return data.title !== undefined && data.content !== undefined && data.iv !== undefined;
+  },
+  { message: "title, content and iv must be sent together" }
 )
 
 export const idParamsSchema = z.object({
