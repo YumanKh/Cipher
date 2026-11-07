@@ -21,19 +21,20 @@ export const getNotes = async (req: Request, res: Response) => {
 export const createNote = async (req: Request, res: Response) => {
     const userId = req.userId;
     const newNote = createNoteSchema.safeParse(req.body);
+
+    if (!userId) {
+        res.status(401).json({ error: "User ID is required" });
+        return;
+    }
     
     if (!newNote.success) {
         res.status(400).json({ error: "Title and content are required" });
         return;
     }
-    if (!userId) {
-        res.status(401).json({ error: "User ID is required" });
-        return;
-    }
 
     try {
-        const note = await createNoteForUser(userId, newNote.data.title, newNote.data.content);
-        res.status(201).json({ note: { id: note.id, title: note.title, content: note.content } });
+        const note = await createNoteForUser(userId, newNote.data.title, newNote.data.content, newNote.data.iv);
+        res.status(201).json({ note: { id: note.id, title: note.title, content: note.content, iv: note.iv } });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
@@ -58,7 +59,7 @@ export const updateNote = async (req: Request, res: Response) => {
     }
 
     try {
-        const results = await updateNoteContent(userId, noteId.data.id, updateData.data?.isFavorite, updateData.data?.title, updateData.data?.content);
+        const results = await updateNoteContent(userId, noteId.data.id, updateData.data.iv, updateData.data?.isFavorite, updateData.data?.title, updateData.data?.content);
         if (!results) {
             res.status(404).json({ error: "Note not found" });
             return;

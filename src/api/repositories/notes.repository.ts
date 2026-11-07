@@ -6,17 +6,18 @@ export const getNotesByUserId = async (userId: number) => {
   });
 };
 
-export const createNote = async (userId: number, title: string, content: string) => {
+export const createNote = async (userId: number, title: string, content: string, iv: string) => {
   return prisma.note.create({
     data: {
       userId: userId,
       title: title,
       content: content,
+      iv: iv,
     }
   });
 };
 
-export const modifyNoteContent = async (userId: number, noteId: number, isFavorite?: boolean, title?: string, content?: string) => {
+export const modifyNoteContent = async (userId: number, noteId: number, iv?: string, isFavorite?: boolean, title?: string, content?: string) => {
   return prisma.note.updateMany({
     where: { 
       id: noteId,
@@ -25,7 +26,8 @@ export const modifyNoteContent = async (userId: number, noteId: number, isFavori
     data: { 
       isFavorite: isFavorite,
       title: title,
-      content: content
+      content: content,
+      iv: iv
     },
   });
 }

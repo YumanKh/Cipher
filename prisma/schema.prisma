@@ -33,6 +33,7 @@ model Note {
   content String
   isFavorite Boolean @default(false)
   userId Int
+  iv String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -43,5 +44,6 @@ model Passwords {
   content String
   isFavorite Boolean @default(false)
   userId Int
+  iv String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

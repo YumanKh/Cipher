@@ -1,6 +1,5 @@
 import type { Request, Response } from 'express';
 import { getPasswordsForUser, createPasswordForUser } from '../services/passwords.service.js';
-import { link } from 'fs/promises';
 import { createPasswordSchema } from '../../schemas/passwords.schema.js';
 
 export const getPasswords = async (req: Request, res: Response) => {
@@ -29,12 +28,12 @@ export const createPassword = async (req: Request, res: Response) => {
     }
 
     if (!newPassword.success) {
-        res.status(400).json({ error: "Title and content are required" });
+        res.status(400).json({ error: "Title, IV, and content are required" });
         return;
     }
 
     try {
-        const createdPassword = await createPasswordForUser(userId, newPassword.data.title, newPassword.data.content, newPassword.data.link);
+        const createdPassword = await createPasswordForUser(userId, newPassword.data.title, newPassword.data.iv, newPassword.data.content, newPassword.data.link);
         res.status(201).json({ password: createdPassword });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });

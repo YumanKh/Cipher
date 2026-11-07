@@ -4,6 +4,6 @@ export const getPasswordsForUser = async (userId: number) => {
   return getPasswordsByUserId(userId);
 };
 
-export const createPasswordForUser = async (userId: number, title: string, content: string, link?: string) => {
-  return createPassword(userId, title, content, link);
+export const createPasswordForUser = async (userId: number, title: string, iv: string, content: string, link?: string) => {
+  return createPassword(userId, title, iv, content, link);
 };

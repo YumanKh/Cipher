@@ -53,12 +53,13 @@ describe("POST /passwords", () => {
         const response = await supertest(app).post("/passwords").send({
             title: "Test Password",
             content: "This is a test password",
+            iv: "iv123"
         });
         expect(response.status).toBe(401);
         expect(response.body).toEqual({ error: "Unauthorized" });
     });
 
-    it("should return 400 if title or content is missing", async () => {
+    it("should return 400 if title, iv or content is missing", async () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
@@ -72,7 +73,7 @@ describe("POST /passwords", () => {
             title: "Test Password",
         });
         expect(response.status).toBe(400);
-        expect(response.body).toEqual({ error: "Title and content are required" });
+        expect(response.body).toEqual({ error: "Title, IV, and content are required" });
     });
 
     it("should return 201 and the created password for a valid user without a link", async () => {
@@ -88,6 +89,7 @@ describe("POST /passwords", () => {
         const response = await supertest(app).post("/passwords").set("Authorization", `Bearer ${token}`).send({
             title: "Test Password",
             content: "This is a test password",
+            iv: "iv123"
         });
         expect(response.status).toBe(201);
         expect(response.body).toEqual({
@@ -96,6 +98,7 @@ describe("POST /passwords", () => {
                 title: "Test Password",
                 link: null,
                 content: "This is a test password",
+                iv: "iv123",
             },
         });
     });

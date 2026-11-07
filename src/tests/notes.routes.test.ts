@@ -51,6 +51,7 @@ describe("POST /notes", () => {
         const response = await supertest(app).post("/notes").send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123"
         });
         expect(response.status).toBe(401);
         expect(response.body).toEqual({ error: "Unauthorized" });
@@ -86,6 +87,7 @@ describe("POST /notes", () => {
         const response = await supertest(app).post("/notes").set("Authorization", `Bearer ${token}`).send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123"
         });
         expect(response.status).toBe(201);
         expect(response.body).toEqual({
@@ -93,6 +95,7 @@ describe("POST /notes", () => {
                 id: expect.any(Number),
                 title: "Test Note",
                 content: "This is a test note",
+                iv: "iv123",
             },
         });
     });
@@ -119,6 +122,7 @@ describe("PATCH /notes/:id", () => {
         const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123"
         });
 
         const token = user.body.tokens.accessToken;
@@ -139,6 +143,7 @@ describe("PATCH /notes/:id", () => {
         const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123" 
         });
 
         const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({});
@@ -159,6 +164,7 @@ describe("PATCH /notes/:id", () => {
         await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123"
         });
 
         const token = user.body.tokens.accessToken;
@@ -187,6 +193,7 @@ describe("PATCH /notes/:id", () => {
         const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user1.body.tokens.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123"
         });
 
         const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user2.body.tokens.accessToken}`).send({isFavorite: true});
@@ -206,9 +213,10 @@ describe("PATCH /notes/:id", () => {
         const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title", content: "Updated Content", isFavorite: true});
+        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title", content: "Updated Content", isFavorite: true, iv: "iv456"});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
@@ -226,6 +234,7 @@ describe("PATCH /notes/:id", () => {
         const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123"
         });
 
         const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({isFavorite: true});
@@ -246,9 +255,10 @@ describe("PATCH /notes/:id", () => {
         const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title"});
+        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title", iv: "iv456"});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
@@ -266,9 +276,10 @@ describe("PATCH /notes/:id", () => {
         const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({content: "Updated Content"});
+        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({content: "Updated Content", iv: "iv456"});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
@@ -312,6 +323,7 @@ describe("DELETE /notes/:id", () => {
         await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123"
         });
 
         const response = await supertest(app).delete(`/notes/99999`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`);
@@ -340,6 +352,7 @@ describe("DELETE /notes/:id", () => {
         const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user1.body.tokens.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123"
         });
 
         const response = await supertest(app).delete(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user2.body.tokens.accessToken}`);
@@ -360,6 +373,7 @@ describe("DELETE /notes/:id", () => {
         const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
+            iv: "iv123"
         });
 
         const response = await supertest(app).delete(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`);
