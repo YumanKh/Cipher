@@ -24,3 +24,19 @@ export const createPassword = async (userId: number, title: string, iv: string, 
         }
     });
 };
+
+export const modifyPasswordContent = async (userId: number, passwordId: number, iv?: string, isFavorite?: boolean, title?: string, content?: string, link?: string) => {
+  return prisma.passwords.updateMany({
+    where: { 
+      id: passwordId,
+      userId: userId,
+    },
+    data: { 
+      isFavorite: isFavorite,
+      title: title,
+      link: link,
+      content: content,
+      iv: iv,
+    },
+  });
+}
