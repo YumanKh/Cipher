@@ -40,7 +40,7 @@ describe("GET /notes", () => {
         const response = await supertest(app).get("/notes").set("Authorization", `Bearer ${token}`);
         expect(user.status).toBe(201);
         expect(response.status).toBe(200);
-        expect(response.body).toEqual([]);
+        expect(response.body).toEqual({ notes: [] });
     });
 
     it.todo("should handle server errors gracefully");
