@@ -39,6 +39,7 @@ model Note {
 model Passwords {
   id Int @id @default(autoincrement())
   title String
+  link String?
   content String
   isFavorite Boolean @default(false)
   userId Int
