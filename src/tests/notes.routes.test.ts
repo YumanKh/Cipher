@@ -258,7 +258,7 @@ describe("PATCH /notes/:id", () => {
             iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title", iv: "iv456"});
+        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title", content: "Updated Content", iv: "iv456"});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
@@ -279,7 +279,7 @@ describe("PATCH /notes/:id", () => {
             iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({content: "Updated Content", iv: "iv456"});
+        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title", content: "Updated Content", iv: "iv456"});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
