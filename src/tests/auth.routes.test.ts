@@ -8,6 +8,15 @@ if (!config.DATABASE_URL?.includes("cipher_test")) {
     throw new Error("Tests must run on the test database");
 }
 
+const getRefreshCookie = (response: supertest.Response) => {
+    const cookies = response.headers["set-cookie"] as unknown as string[];
+    return cookies.find((cookie) => cookie.startsWith("refreshToken="))!;
+};
+
+const getRefreshToken = (response: supertest.Response) => {
+    return getRefreshCookie(response).split(";")[0].replace("refreshToken=", "");
+};
+
 beforeEach(async () => {
     await prisma.refreshToken.deleteMany();
     await prisma.user.deleteMany();
@@ -29,8 +38,10 @@ describe("/auth/register", () => {
         expect(response.body.user).toHaveProperty("name");
         expect(response.body.user).toHaveProperty("email");
         expect(response.body.user.hashedPassword).toBeUndefined();
-        expect(response.body.tokens.refreshToken).toBeDefined();
-        expect(response.body.tokens.accessToken).toBeDefined();
+        expect(response.body.accessToken).toBeDefined();
+        expect(response.body.refreshToken).toBeUndefined();
+        expect(getRefreshToken(response)).toBeTruthy();
+        expect(getRefreshCookie(response)).toContain("HttpOnly");
     })
 
     it("should fail to register a user with missing fields", async () => {
@@ -98,8 +109,10 @@ describe("/auth/login", () => {
         expect(response.body.user.cryptingKey).toBe("key123");
         expect(response.body.user.kdfSalt).toBe("salt123");
         expect(response.body.user.hashedPassword).toBeUndefined();
-        expect(response.body.tokens.refreshToken).toBeDefined();
-        expect(response.body.tokens.accessToken).toBeDefined();
+        expect(response.body.accessToken).toBeDefined();
+        expect(response.body.refreshToken).toBeUndefined();
+        expect(getRefreshToken(response)).toBeTruthy();
+        expect(getRefreshCookie(response)).toContain("HttpOnly");
     });
 
     it("should fail to login a user with incorrect password", async () => {
@@ -165,9 +178,7 @@ describe("/auth/logout", () => {
             kdfSalt: "salt123",
         });
 
-        const response = await supertest(app).post("/auth/logout").send({
-            refreshToken: "valid-refresh-token",
-        });
+        const response = await supertest(app).post("/auth/logout").set("Cookie", "refreshToken=valid-refresh-token");
 
         const bodyCount = await prisma.refreshToken.count();
         
@@ -185,9 +196,7 @@ describe("/auth/logout", () => {
                 kdfSalt: "salt123",
             });
 
-            const response = await supertest(app).post("/auth/logout").send({
-                refreshToken: loginResponse.body.tokens.refreshToken,
-            });
+            const response = await supertest(app).post("/auth/logout").set("Cookie", `refreshToken=${getRefreshToken(loginResponse)}`);
 
             const bodyCount = await prisma.refreshToken.count();
             
@@ -196,8 +205,8 @@ describe("/auth/logout", () => {
             expect(response.body.message).toBe("User logged out successfully");
         });
 
-    it("should fail to logout a user with missing fields", async () => {
-        const response = await supertest(app).post("/auth/logout").send({});
+    it("should fail to logout a user with a missing refresh token cookie", async () => {
+        const response = await supertest(app).post("/auth/logout");
 
         expect(response.status).toBe(400);
     });
@@ -215,19 +224,18 @@ describe("/auth/refresh", () => {
             kdfSalt: "salt123",
         });
 
-        const response = await supertest(app).post("/auth/refresh").send({
-            refreshToken: registerResponse.body.tokens.refreshToken,
-        });
+        const oldRefreshToken = getRefreshToken(registerResponse);
+
+        const response = await supertest(app).post("/auth/refresh").set("Cookie", `refreshToken=${oldRefreshToken}`);
 
         expect(response.status).toBe(200);
-        expect(response.body.tokens).toHaveProperty("accessToken");
-        expect(response.body.tokens).toHaveProperty("refreshToken");
+        expect(response.body).toHaveProperty("accessToken");
+        expect(getRefreshToken(response)).toBeTruthy();
+        expect(getRefreshToken(response)).not.toBe(oldRefreshToken);
     });
 
     it("should fail to refresh tokens with an invalid refresh token", async () => {
-        const response = await supertest(app).post("/auth/refresh").send({
-            refreshToken: "invalid-refresh-token",
-        });
+        const response = await supertest(app).post("/auth/refresh").set("Cookie", "refreshToken=invalid-refresh-token");
 
         expect(response.status).toBe(401);
         expect(response.body.error).toBe("Invalid or expired refresh token");
@@ -242,23 +250,22 @@ describe("/auth/refresh", () => {
             kdfSalt: "salt123",
         });
 
-        const refreshResponse = await supertest(app).post("/auth/refresh").send({
-            refreshToken: registerResponse.body.tokens.refreshToken,
-        });
+        const oldRefreshToken = getRefreshToken(registerResponse);
 
-        const response = await supertest(app).post("/auth/refresh").send({
-            refreshToken: registerResponse.body.tokens.refreshToken,
-        });
+        const refreshResponse = await supertest(app).post("/auth/refresh").set("Cookie", `refreshToken=${oldRefreshToken}`);
+
+        const response = await supertest(app).post("/auth/refresh").set("Cookie", `refreshToken=${oldRefreshToken}`);
 
         expect(refreshResponse.status).toBe(200)
         expect(response.status).toBe(401);
         expect(response.body.error).toBe("Invalid or expired refresh token");
     });
 
-    it("should fail to refresh tokens with missing fields", async () => {
-        const response = await supertest(app).post("/auth/refresh").send({});
+    it("should fail to refresh tokens with a missing refresh token cookie", async () => {
+        const response = await supertest(app).post("/auth/refresh");
 
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(401);
+        expect(response.body.error).toBe("Missing refresh token");
     });
 
     it.todo("should handle server errors gracefully");
