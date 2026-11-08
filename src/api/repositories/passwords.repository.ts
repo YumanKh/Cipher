@@ -40,3 +40,12 @@ export const modifyPasswordContent = async (userId: number, passwordId: number, 
     },
   });
 }
+
+export const deletePassword = async (userId: number, passwordId: number) => {
+  return prisma.passwords.deleteMany({
+    where: {
+      id: passwordId,
+      userId: userId,
+    }
+  });
+};
