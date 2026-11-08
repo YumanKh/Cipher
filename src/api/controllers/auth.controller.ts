@@ -1,10 +1,12 @@
 import { registerUser, loginUser, logoutUser, refreshUserToken } from "../services/auth.service.js";
 import { Request, Response } from "express";
-import { loginSchema, registerSchema, logoutSchema, refreshSchema } from "../../schemas/auth.schema.js";
+import { loginSchema, registerSchema } from "../../schemas/auth.schema.js";
 import { Prisma } from "@prisma/client";
+import { config } from "../../config.js";
 
 export const register = async (req: Request, res: Response) => {
     const result = registerSchema.safeParse(req.body);
+
     if (!result.success) {
         res.status(400).json({ error: "Invalid request body" });
         return;
@@ -15,7 +17,7 @@ export const register = async (req: Request, res: Response) => {
     try {
         const { user, tokens } = await registerUser(userData);
 
-        res.status(201).json({ user, tokens });
+        res.status(201).cookie("refreshToken", tokens.refreshToken, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict", path: "/auth", maxAge: 30 * 24 * 60 * 60 * 1000 }).json({ user, accessToken: tokens.accessToken });
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
             res.status(409).json({ error: "User with this email already exists" });
@@ -27,6 +29,7 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
     const result = loginSchema.safeParse(req.body);
+
     if (!result.success) {
         res.status(400).json({ error: "Invalid request body" });
         return;
@@ -41,20 +44,19 @@ export const login = async (req: Request, res: Response) => {
             return;
         }
 
-        res.status(200).json({ user: loggedUser.user, tokens: loggedUser.tokens });
+        res.status(200).cookie("refreshToken", loggedUser.tokens.refreshToken, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict", path: "/auth", maxAge: 30 * 24 * 60 * 60 * 1000 }).json({ user: loggedUser.user, accessToken: loggedUser.tokens.accessToken });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
 };
 
 export const logout = async (req: Request, res: Response) => {
-    const result = logoutSchema.safeParse(req.body);
-    if (!result.success) {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
         res.status(400).json({ error: "Invalid request body" });
         return;
     }
-
-    const refreshToken = result.data.refreshToken;
 
     try {
         await logoutUser(refreshToken);
@@ -65,13 +67,12 @@ export const logout = async (req: Request, res: Response) => {
 };
 
 export const refresh = async (req: Request, res: Response) => {
-    const result = refreshSchema.safeParse(req.body);
-    if (!result.success) {
-        res.status(400).json({ error: "Invalid request body" });
+    const refreshToken = req.cookies.refreshToken;
+
+    if(!refreshToken) {
+        res.status(401).json({ error: "Missing refresh token" });
         return;
     }
-
-    const refreshToken = result.data.refreshToken;
 
     try {
         const refreshedTokens = await refreshUserToken(refreshToken);
@@ -80,7 +81,7 @@ export const refresh = async (req: Request, res: Response) => {
             return;
         }
 
-        res.status(200).json({ tokens: refreshedTokens.tokens });
+        res.status(200).cookie("refreshToken", refreshedTokens.tokens.refreshToken, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict", path: "/auth", maxAge: 30 * 24 * 60 * 60 * 1000 }).json({ accessToken: refreshedTokens.tokens.accessToken });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
