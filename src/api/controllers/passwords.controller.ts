@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { getPasswordsForUser, createPasswordForUser, updatePasswordContent } from '../services/passwords.service.js';
+import { getPasswordsForUser, createPasswordForUser, updatePasswordContent, deletePasswordForUser } from '../services/passwords.service.js';
 import { createPasswordSchema, idParamsSchema, modifyPasswordSchema } from '../../schemas/passwords.schema.js';
 
 export const getPasswords = async (req: Request, res: Response) => {
@@ -66,6 +66,32 @@ export const updatePassword = async (req: Request, res: Response) => {
         }
 
         res.status(200).json({ updated: true });
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const deletePassword = async (req: Request, res: Response) => {
+    const userId = req.userId;
+    const passwordId = idParamsSchema.safeParse(req.params);
+
+    if (!userId) {
+        res.status(401).json({ error: "User ID is required" });
+        return;
+    }
+    if (!passwordId.success) {
+        res.status(400).json({ error: "Invalid password ID" });
+        return;
+    }
+
+    try {
+        const results = await deletePasswordForUser(userId, passwordId.data.id);
+        if (!results) {
+            res.status(404).json({ error: "Password not found" });
+            return;
+        }
+
+        res.status(200).json({ deleted: true });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
