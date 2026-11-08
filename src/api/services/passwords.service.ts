@@ -1,4 +1,4 @@
-import { getPasswordsByUserId, createPassword, modifyPasswordContent } from '../repositories/passwords.repository.js';
+import { getPasswordsByUserId, createPassword, modifyPasswordContent, deletePassword } from '../repositories/passwords.repository.js';
 
 export const getPasswordsForUser = async (userId: number) => {
   return getPasswordsByUserId(userId);
@@ -14,3 +14,10 @@ export const updatePasswordContent = async (userId: number, passwordId: number, 
   if (results.count === 0) return null;
   return results;
 }
+
+export const deletePasswordForUser = async (userId: number, passwordId: number) => {
+  const results = await deletePassword(userId, passwordId);
+  
+  if (results.count === 0) return null;
+  return results;
+};
