@@ -36,7 +36,7 @@ describe("GET /notes", () => {
             kdfSalt: "salt123",
         });
 
-        const token = user.body.tokens.accessToken;
+        const token = user.body.accessToken;
         const response = await supertest(app).get("/notes").set("Authorization", `Bearer ${token}`);
         expect(user.status).toBe(201);
         expect(response.status).toBe(200);
@@ -66,7 +66,7 @@ describe("POST /notes", () => {
             kdfSalt: "salt123",
         });
 
-        const token = user.body.tokens.accessToken;
+        const token = user.body.accessToken;
         const response = await supertest(app).post("/notes").set("Authorization", `Bearer ${token}`).send({
             title: "Test Note",
         });
@@ -83,7 +83,7 @@ describe("POST /notes", () => {
             kdfSalt: "salt123",
         });
 
-        const token = user.body.tokens.accessToken;
+        const token = user.body.accessToken;
         const response = await supertest(app).post("/notes").set("Authorization", `Bearer ${token}`).send({
             title: "Test Note",
             content: "This is a test note",
@@ -119,13 +119,13 @@ describe("PATCH /notes/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
             iv: "iv123"
         });
 
-        const token = user.body.tokens.accessToken;
+        const token = user.body.accessToken;
         const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${token}`).send({noteId: 1, isFavorite: "true"});
         expect(response.status).toBe(400);
         expect(response.body).toEqual({ error: "Invalid update data" });
@@ -140,13 +140,13 @@ describe("PATCH /notes/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
             iv: "iv123" 
         });
 
-        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({});
+        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.accessToken}`).send({});
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({ error: "Invalid update data" });
@@ -161,13 +161,13 @@ describe("PATCH /notes/:id", () => {
             kdfSalt: "salt123",
         });
 
-        await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
             iv: "iv123"
         });
 
-        const token = user.body.tokens.accessToken;
+        const token = user.body.accessToken;
         const response = await supertest(app).patch(`/notes/99999`).set("Authorization", `Bearer ${token}`).send({isFavorite: true});
         expect(response.status).toBe(404);
         expect(response.body).toEqual({ error: "Note not found" });
@@ -190,13 +190,13 @@ describe("PATCH /notes/:id", () => {
             kdfSalt: "salt456",
         });
 
-        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user1.body.tokens.accessToken}`).send({
+        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user1.body.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
             iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user2.body.tokens.accessToken}`).send({isFavorite: true});
+        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user2.body.accessToken}`).send({isFavorite: true});
         expect(response.status).toBe(404);
         expect(response.body).toEqual({ error: "Note not found" });
     });
@@ -210,13 +210,13 @@ describe("PATCH /notes/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
             iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title", content: "Updated Content", isFavorite: true, iv: "iv456"});
+        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.accessToken}`).send({title: "Updated Title", content: "Updated Content", isFavorite: true, iv: "iv456"});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
@@ -231,13 +231,13 @@ describe("PATCH /notes/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
             iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({isFavorite: true});
+        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.accessToken}`).send({isFavorite: true});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
@@ -252,13 +252,13 @@ describe("PATCH /notes/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
             iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title", content: "Updated Content", iv: "iv456"});
+        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.accessToken}`).send({title: "Updated Title", content: "Updated Content", iv: "iv456"});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
@@ -273,13 +273,13 @@ describe("PATCH /notes/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
             iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title", content: "Updated Content", iv: "iv456"});
+        const response = await supertest(app).patch(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.accessToken}`).send({title: "Updated Title", content: "Updated Content", iv: "iv456"});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
@@ -305,7 +305,7 @@ describe("DELETE /notes/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const response = await supertest(app).delete(`/notes/invalid`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`);
+        const response = await supertest(app).delete(`/notes/invalid`).set("Authorization", `Bearer ${user.body.accessToken}`);
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({ error: "Invalid note ID" });
@@ -320,13 +320,13 @@ describe("DELETE /notes/:id", () => {
             kdfSalt: "salt123",
         });
 
-        await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
             iv: "iv123"
         });
 
-        const response = await supertest(app).delete(`/notes/99999`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`);
+        const response = await supertest(app).delete(`/notes/99999`).set("Authorization", `Bearer ${user.body.accessToken}`);
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({ error: "Note not found" });
@@ -349,13 +349,13 @@ describe("DELETE /notes/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user1.body.tokens.accessToken}`).send({
+        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user1.body.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
             iv: "iv123"
         });
 
-        const response = await supertest(app).delete(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user2.body.tokens.accessToken}`);
+        const response = await supertest(app).delete(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user2.body.accessToken}`);
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({ error: "Note not found" });
@@ -370,13 +370,13 @@ describe("DELETE /notes/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const note = await supertest(app).post("/notes").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Note",
             content: "This is a test note",
             iv: "iv123"
         });
 
-        const response = await supertest(app).delete(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`);
+        const response = await supertest(app).delete(`/notes/${note.body.note.id}`).set("Authorization", `Bearer ${user.body.accessToken}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ deleted: true });

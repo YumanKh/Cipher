@@ -38,7 +38,7 @@ describe("GET /passwords", () => {
             kdfSalt: "salt123",
         });
 
-        const token = user.body.tokens.accessToken;
+        const token = user.body.accessToken;
         const response = await supertest(app).get("/passwords").set("Authorization", `Bearer ${token}`);
         expect(user.status).toBe(201);
         expect(response.status).toBe(200);
@@ -68,7 +68,7 @@ describe("POST /passwords", () => {
             kdfSalt: "salt123",
         });
 
-        const token = user.body.tokens.accessToken;
+        const token = user.body.accessToken;
         const response = await supertest(app).post("/passwords").set("Authorization", `Bearer ${token}`).send({
             title: "Test Password",
         });
@@ -85,7 +85,7 @@ describe("POST /passwords", () => {
             kdfSalt: "salt123",
         });
 
-        const token = user.body.tokens.accessToken;
+        const token = user.body.accessToken;
         const response = await supertest(app).post("/passwords").set("Authorization", `Bearer ${token}`).send({
             title: "Test Password",
             content: "This is a test password",
@@ -122,13 +122,13 @@ describe("PATCH /passwords/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Passwords",
             content: "This is a test password",
             iv: "iv123"
         });
 
-        const token = user.body.tokens.accessToken;
+        const token = user.body.accessToken;
         const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${token}`).send({noteId: 1, isFavorite: "true"});
         expect(response.status).toBe(400);
         expect(response.body).toEqual({ error: "Invalid update data" });
@@ -143,13 +143,13 @@ describe("PATCH /passwords/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Password",
             content: "This is a test password",
             iv: "iv123" 
         });
 
-        const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({});
+        const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user.body.accessToken}`).send({});
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({ error: "Invalid update data" });
@@ -164,13 +164,13 @@ describe("PATCH /passwords/:id", () => {
             kdfSalt: "salt123",
         });
 
-        await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Password",
             content: "This is a test password",
             iv: "iv123"
         });
 
-        const token = user.body.tokens.accessToken;
+        const token = user.body.accessToken;
         const response = await supertest(app).patch(`/passwords/99999`).set("Authorization", `Bearer ${token}`).send({isFavorite: true});
         expect(response.status).toBe(404);
         expect(response.body).toEqual({ error: "Password not found" });
@@ -193,13 +193,13 @@ describe("PATCH /passwords/:id", () => {
             kdfSalt: "salt456",
         });
 
-        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user1.body.tokens.accessToken}`).send({
+        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user1.body.accessToken}`).send({
             title: "Test Password",
             content: "This is a test password",
             iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user2.body.tokens.accessToken}`).send({isFavorite: true});
+        const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user2.body.accessToken}`).send({isFavorite: true});
         expect(response.status).toBe(404);
         expect(response.body).toEqual({ error: "Password not found" });
     });
@@ -213,13 +213,13 @@ describe("PATCH /passwords/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Password",
             content: "This is a test password",
             iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title", content: "Updated Content", isFavorite: true, iv: "iv456"});
+        const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user.body.accessToken}`).send({title: "Updated Title", content: "Updated Content", isFavorite: true, iv: "iv456"});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
@@ -234,13 +234,13 @@ describe("PATCH /passwords/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Password",
             content: "This is a test password",
             iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({isFavorite: true});
+        const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user.body.accessToken}`).send({isFavorite: true});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
@@ -255,13 +255,13 @@ describe("PATCH /passwords/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Password",
             content: "This is a test password",
             iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title", content: "Updated Content", iv: "iv456"});
+        const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user.body.accessToken}`).send({title: "Updated Title", content: "Updated Content", iv: "iv456"});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
@@ -276,13 +276,13 @@ describe("PATCH /passwords/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Password",
             content: "This is a test password",
             iv: "iv123"
         });
 
-        const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({title: "Updated Title", content: "Updated Content", iv: "iv456"});
+        const response = await supertest(app).patch(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user.body.accessToken}`).send({title: "Updated Title", content: "Updated Content", iv: "iv456"});
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ updated: true });
@@ -301,13 +301,13 @@ describe("DELETE /passwords/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Password",
             content: "This is a test password",
             iv: "iv123"
         });
 
-        const response = await supertest(app).delete(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`);
+        const response = await supertest(app).delete(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user.body.accessToken}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ deleted: true });
@@ -322,14 +322,14 @@ describe("DELETE /passwords/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const response = await supertest(app).delete(`/passwords/999999`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`);
+        const response = await supertest(app).delete(`/passwords/999999`).set("Authorization", `Bearer ${user.body.accessToken}`);
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({ error: "Password not found" });
     });
 
-        it("should return 401 for unauthenticated request", async () => {
-        const response = await supertest(app).delete(`/notes/1`);
+    it("should return 401 for unauthenticated request", async () => {
+        const response = await supertest(app).delete(`/passwords/1`);
 
         expect(response.status).toBe(401);
         expect(response.body).toEqual({ error: "Unauthorized" });
@@ -344,7 +344,7 @@ describe("DELETE /passwords/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const response = await supertest(app).delete(`/passwords/invalid`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`);
+        const response = await supertest(app).delete(`/passwords/invalid`).set("Authorization", `Bearer ${user.body.accessToken}`);
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({ error: "Invalid password ID" });
@@ -359,13 +359,13 @@ describe("DELETE /passwords/:id", () => {
             kdfSalt: "salt123",
         });
 
-        await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.tokens.accessToken}`).send({
+        await supertest(app).post("/passwords").set("Authorization", `Bearer ${user.body.accessToken}`).send({
             title: "Test Password",
             content: "This is a test password",
             iv: "iv123"
         });
 
-        const response = await supertest(app).delete(`/passwords/99999`).set("Authorization", `Bearer ${user.body.tokens.accessToken}`);
+        const response = await supertest(app).delete(`/passwords/99999`).set("Authorization", `Bearer ${user.body.accessToken}`);
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({ error: "Password not found" });
@@ -388,13 +388,13 @@ describe("DELETE /passwords/:id", () => {
             kdfSalt: "salt123",
         });
 
-        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user1.body.tokens.accessToken}`).send({
+        const password = await supertest(app).post("/passwords").set("Authorization", `Bearer ${user1.body.accessToken}`).send({
             title: "Test Password",
             content: "This is a test password",
             iv: "iv123"
         });
 
-        const response = await supertest(app).delete(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user2.body.tokens.accessToken}`);
+        const response = await supertest(app).delete(`/passwords/${password.body.password.id}`).set("Authorization", `Bearer ${user2.body.accessToken}`);
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({ error: "Password not found" });
