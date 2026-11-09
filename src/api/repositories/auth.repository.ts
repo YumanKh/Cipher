@@ -66,7 +66,3 @@ export const deleteRefreshTokenById = async (id: number) => {
         where: { id },
     });
 };
-
-export const comparePassword = async (password: string, hashedPassword: string) => {
-    return bcrypt.compare(password, hashedPassword);
-};

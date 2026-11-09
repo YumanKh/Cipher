@@ -14,4 +14,3 @@ export const hashToken = (token: string) => {
 export const signAccessToken = (userId: number) => {
     return jwt.sign({ id: userId }, config.JWT_SECRET, { expiresIn: "15m" });
 }
-
