@@ -2,8 +2,6 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { config } from "../config.js";
-import { prisma } from "../lib/prisma.js";
-import { createRefreshToken } from "../api/repositories/auth.repository.js";
 
 export const passwordHashing = (password: string) => {
     return bcrypt.hash(password, 10);

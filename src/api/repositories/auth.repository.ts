@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma.js";
+import bcrypt from "bcryptjs";
 
 export const createUser = async (data: {
     name: string;
@@ -64,4 +65,8 @@ export const deleteRefreshTokenById = async (id: number) => {
     return prisma.refreshToken.deleteMany({
         where: { id },
     });
+};
+
+export const comparePassword = async (password: string, hashedPassword: string) => {
+    return bcrypt.compare(password, hashedPassword);
 };
