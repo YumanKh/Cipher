@@ -399,4 +399,6 @@ describe("DELETE /passwords/:id", () => {
         expect(response.status).toBe(404);
         expect(response.body).toEqual({ error: "Password not found" });
     });
+
+    it.todo("should handle server errors gracefully");
 });
