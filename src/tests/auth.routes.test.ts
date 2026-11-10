@@ -24,11 +24,11 @@ beforeEach(async () => {
 });
 
 describe("/auth/register", () => {
-    it("should register a new user successfully", async () => {
+    it("should return 201 when registering a new user successfully", async () => {
         const response = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -44,7 +44,7 @@ describe("/auth/register", () => {
         expect(getRefreshCookie(response)).toContain("HttpOnly");
     })
 
-    it("should fail to register a user with missing fields", async () => {
+    it("should return 400 when registering a user with missing fields", async () => {
         const response = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
@@ -53,11 +53,11 @@ describe("/auth/register", () => {
         expect(response.status).toBe(400);
     });
 
-    it("should fail to register a user with incorrect field types", async () => {
+    it("should return 400 when registering a user with incorrect field types", async () => {
         const response = await supertest(app).post("/auth/register").send({
             name: 123,
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password1234",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -65,18 +65,18 @@ describe("/auth/register", () => {
         expect(response.status).toBe(400);
     });
 
-    it("should fail to register a user with duplicate email", async () => {
+    it("should return 409 when registering a user with duplicate email", async () => {
         await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password1234",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
         const response = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password1234",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -88,18 +88,18 @@ describe("/auth/register", () => {
 });
 
 describe("/auth/login", () => {
-    it("should login a user successfully", async () => {
+    it("should return 200 when logging in a user successfully", async () => {
         await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password1234",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
 
         const response = await supertest(app).post("/auth/login").send({
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password1234",
         });
 
         expect(response.status).toBe(200);
@@ -115,11 +115,11 @@ describe("/auth/login", () => {
         expect(getRefreshCookie(response)).toContain("HttpOnly");
     });
 
-    it("should fail to login a user with incorrect password", async () => {
+    it("should return 401 when logging in a user with incorrect password", async () => {
         await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -132,28 +132,28 @@ describe("/auth/login", () => {
         expect(response.status).toBe(401);
     });
 
-    it("should fail to login a user with incorrect email", async () => {
+    it("should return 401 when logging in a user with incorrect email", async () => {
         await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
 
         const response = await supertest(app).post("/auth/login").send({
             email: "wrongemail@example.com",
-            authValue: "password123",
+            authValue: "password12344",
         });
 
         expect(response.status).toBe(401);
     });
 
-    it("should fail to login a user with missing fields", async () => {
+    it("should return 400 when logging in a user with missing fields", async () => {
         await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -170,10 +170,13 @@ describe("/auth/login", () => {
 
 describe("/auth/logout", () => {
     it("should return 200 and delete nothing for an unknown refresh token", async () => {
+    });
+
+    it("should return 200 when successfully logging out a user with a valid refresh token", async () => {
         await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -187,11 +190,11 @@ describe("/auth/logout", () => {
         expect(response.body.message).toBe("User logged out successfully");
     });
 
-    it("should successfully logout a user with a valid refresh token", async () => {
+    it("should return 200 when successfully logging out a user with a valid refresh token", async () => {
         const loginResponse = await supertest(app).post("/auth/register").send({
                 name: "Test User",
                 email: "testuser@example.com",
-                authValue: "password123",
+                authValue: "password12344",
                 cryptingKey: "key123",
                 kdfSalt: "salt123",
             });
@@ -205,7 +208,7 @@ describe("/auth/logout", () => {
             expect(response.body.message).toBe("User logged out successfully");
         });
 
-    it("should fail to logout a user with a missing refresh token cookie", async () => {
+    it("should return 400 when logging out a user with a missing refresh token cookie", async () => {
         const response = await supertest(app).post("/auth/logout");
 
         expect(response.status).toBe(400);
@@ -215,11 +218,11 @@ describe("/auth/logout", () => {
 });
 
 describe("/auth/refresh", () => {
-    it("should successfully refresh tokens with a valid refresh token", async () => {
+    it("should return 200 when successfully refreshing tokens with a valid refresh token", async () => {
         const registerResponse = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -234,18 +237,18 @@ describe("/auth/refresh", () => {
         expect(getRefreshToken(response)).not.toBe(oldRefreshToken);
     });
 
-    it("should fail to refresh tokens with an invalid refresh token", async () => {
+    it("should return 401 when refreshing tokens with an invalid refresh token", async () => {
         const response = await supertest(app).post("/auth/refresh").set("Cookie", "refreshToken=invalid-refresh-token");
 
         expect(response.status).toBe(401);
         expect(response.body.error).toBe("Invalid or expired refresh token");
     });
 
-    it("should fail to refresh tokens with an already used refresh token", async () => {
+    it("should return 401 when refreshing tokens with an already used refresh token", async () => {
          const registerResponse = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -261,7 +264,7 @@ describe("/auth/refresh", () => {
         expect(response.body.error).toBe("Invalid or expired refresh token");
     });
 
-    it("should fail to refresh tokens with a missing refresh token cookie", async () => {
+    it("should return 401 when refreshing tokens with a missing refresh token cookie", async () => {
         const response = await supertest(app).post("/auth/refresh");
 
         expect(response.status).toBe(401);

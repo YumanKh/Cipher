@@ -20,7 +20,7 @@ export const deleteUser = async (req: Request, res: Response) => {
         const deleted = await deleteUserAccount(userId, result.data.authValue);
 
         if (!deleted) {
-            res.status(401).json({ error: 'Invalid auth value or user not found' });
+            res.status(401).json({ error: 'Invalid password' });
             return;
         }
 
@@ -48,7 +48,7 @@ export const updatePassword = async (req: Request, res: Response) => {
         const updated = await updateUserPassword(userId, result.data.currentAuthValue, result.data.newAuthValue, result.data.cryptingKey);
 
         if (!updated) {
-            res.status(401).json({ error: 'Invalid password or user not found' });
+            res.status(401).json({ error: 'Invalid password' });
             return;
         }
 

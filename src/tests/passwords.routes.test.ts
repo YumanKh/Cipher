@@ -33,7 +33,7 @@ describe("GET /passwords", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -63,7 +63,7 @@ describe("POST /passwords", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -80,7 +80,7 @@ describe("POST /passwords", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -117,7 +117,7 @@ describe("PATCH /passwords/:id", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -138,7 +138,7 @@ describe("PATCH /passwords/:id", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -159,7 +159,7 @@ describe("PATCH /passwords/:id", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -180,7 +180,7 @@ describe("PATCH /passwords/:id", () => {
         const user1 = await supertest(app).post("/auth/register").send({
             name: "User One",
             email: "user1@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -188,7 +188,7 @@ describe("PATCH /passwords/:id", () => {
         const user2 = await supertest(app).post("/auth/register").send({
             name: "User Two",
             email: "user2@example.com",
-            authValue: "password456",
+            authValue: "password12344",
             cryptingKey: "key456",
             kdfSalt: "salt456",
         });
@@ -208,7 +208,7 @@ describe("PATCH /passwords/:id", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -229,7 +229,7 @@ describe("PATCH /passwords/:id", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -250,7 +250,7 @@ describe("PATCH /passwords/:id", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -271,7 +271,7 @@ describe("PATCH /passwords/:id", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -296,7 +296,7 @@ describe("DELETE /passwords/:id", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -317,7 +317,7 @@ describe("DELETE /passwords/:id", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -339,7 +339,7 @@ describe("DELETE /passwords/:id", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -354,7 +354,7 @@ describe("DELETE /passwords/:id", () => {
         const user = await supertest(app).post("/auth/register").send({
             name: "Test User",
             email: "testuser@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -375,7 +375,7 @@ describe("DELETE /passwords/:id", () => {
         const user1 = await supertest(app).post("/auth/register").send({
             name: "User 1",
             email: "user1@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
@@ -383,7 +383,7 @@ describe("DELETE /passwords/:id", () => {
         const user2 = await supertest(app).post("/auth/register").send({
             name: "User 2",
             email: "user2@example.com",
-            authValue: "password123",
+            authValue: "password12344",
             cryptingKey: "key123",
             kdfSalt: "salt123",
         });
