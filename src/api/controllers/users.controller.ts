@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { deleteUserAccount } from "../services/users.service.js";
-import { deleteUserSchema } from "../../schemas/users.schema.js";
+import { deleteUserAccount, updateUserPassword } from "../services/users.service.js";
+import { deleteUserSchema, updateUserPasswordSchema } from "../../schemas/users.schema.js";
 
 export const deleteUser = async (req: Request, res: Response) => {
     const userId = req.userId;
@@ -26,6 +26,34 @@ export const deleteUser = async (req: Request, res: Response) => {
 
         res.status(200).clearCookie("refreshToken", { path: "/auth" }).json({ deleted: true });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to delete user' });
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const updatePassword = async (req: Request, res: Response) => {
+    const userId = req.userId;
+    const result = updateUserPasswordSchema.safeParse(req.body);
+
+    if (!userId) {
+        res.status(401).json({ error: 'User ID is required' });
+        return;
+    }
+
+    if (!result.success) {
+        res.status(400).json({ error: 'Auth value is required' });
+        return;
+    }
+
+    try {
+        const updated = await updateUserPassword(userId, result.data.currentAuthValue, result.data.newAuthValue, result.data.cryptingKey);
+
+        if (!updated) {
+            res.status(401).json({ error: 'Invalid password or user not found' });
+            return;
+        }
+
+        res.status(200).json({ updated: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
