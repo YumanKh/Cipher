@@ -23,7 +23,7 @@ beforeEach(async () => {
     await prisma.note.deleteMany();
 });
 
-describe("/auth/register", () => {
+describe("POST /auth/register", () => {
     it("should return 201 when registering a new user successfully", async () => {
         const response = await supertest(app).post("/auth/register").send({
             name: "Test User",
@@ -87,7 +87,44 @@ describe("/auth/register", () => {
     it.todo("should handle server errors gracefully");
 });
 
-describe("/auth/login", () => {
+describe("POST /auth/prelogin", () => {
+    it("should return 200 when prelogin is successful", async () => {
+        await supertest(app).post("/auth/register").send({
+            name: "Test User",
+            email: "testuser@example.com",
+            authValue: "password1234",
+            cryptingKey: "key123",
+            kdfSalt: "salt123",
+        });
+
+        const response = await supertest(app).post("/auth/prelogin").send({
+            email: "testuser@example.com",
+        });
+
+        expect(response.status).toBe(200);
+        expect(response.body.kdfSalt).toBe("salt123");
+    });
+
+    it("should return 400 when prelogin is called with an invalid email", async () => {
+        const response = await supertest(app).post("/auth/prelogin").send({
+            email: "invalid-email",
+        });
+
+        expect(response.status).toBe(400);
+    });
+
+    it("should return 404 when prelogin is called with a non-existent email", async () => {
+        const response = await supertest(app).post("/auth/prelogin").send({
+            email: "nonexistent@example.com",
+        });
+
+        expect(response.status).toBe(404);
+    });
+
+    it.todo("should handle server errors gracefully");
+});
+
+describe("POST /auth/login", () => {
     it("should return 200 when logging in a user successfully", async () => {
         await supertest(app).post("/auth/register").send({
             name: "Test User",
@@ -217,7 +254,7 @@ describe("/auth/logout", () => {
     it.todo("should handle server errors gracefully");
 });
 
-describe("/auth/refresh", () => {
+describe("POST /auth/refresh", () => {
     it("should return 200 when successfully refreshing tokens with a valid refresh token", async () => {
         const registerResponse = await supertest(app).post("/auth/register").send({
             name: "Test User",
