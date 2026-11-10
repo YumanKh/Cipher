@@ -12,3 +12,7 @@ export const loginSchema = z.object({
     email: z.string().email().toLowerCase(),
     authValue: z.string().min(12)
 });
+
+export const preloginSchema = z.object({
+    email: z.string().email().toLowerCase()
+});
