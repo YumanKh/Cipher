@@ -40,7 +40,7 @@ export const prelogin = async (req: Request, res: Response) => {
     try {
         const kdfSalt = await getKdfSaltByEmail(email);
         if (!kdfSalt) {
-            res.status(404).json({ error: "User not found" });
+            res.status(404).json({ error: "Invalid email or password" });
             return;
         }
 
