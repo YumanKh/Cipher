@@ -7,6 +7,8 @@ export const deleteUserSchema = z.object({
 export const updateUserSchema = z.object({
     name: z.string().min(3).max(15).optional(),
     email: z.string().email().toLowerCase().optional()
+}).refine((data) => data.name || data.email, {
+    message: "At least one of name or email must be provided"
 });
 
 export const updateUserPasswordSchema = z.object({
