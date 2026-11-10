@@ -1,6 +1,6 @@
-import { registerUser, loginUser, logoutUser, refreshUserToken } from "../services/auth.service.js";
+import { registerUser, loginUser, logoutUser, refreshUserToken, getKdfSaltByEmail } from "../services/auth.service.js";
 import { Request, Response } from "express";
-import { loginSchema, registerSchema } from "../../schemas/auth.schema.js";
+import { loginSchema, registerSchema, preloginSchema } from "../../schemas/auth.schema.js";
 import { Prisma } from "@prisma/client";
 import { config } from "../../config.js";
 
@@ -23,6 +23,29 @@ export const register = async (req: Request, res: Response) => {
             res.status(409).json({ error: "User with this email already exists" });
             return;
         }
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const prelogin = async (req: Request, res: Response) => {
+    const result = preloginSchema.safeParse(req.body);
+
+    if (!result.success) {
+        res.status(400).json({ error: "Invalid request body" });
+        return;
+    }
+
+    const email = result.data.email;
+
+    try {
+        const kdfSalt = await getKdfSaltByEmail(email);
+        if (!kdfSalt) {
+            res.status(404).json({ error: "User not found" });
+            return;
+        }
+
+        res.status(200).json({ kdfSalt: kdfSalt.kdfSalt });
+    } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
 };
