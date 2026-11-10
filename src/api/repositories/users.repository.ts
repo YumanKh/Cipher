@@ -16,6 +16,18 @@ export const deleteUser = async (userId: number) => {
     });
 };
 
+export const updateDatas = async (userID: number, name?: string, email?: string) => {
+    return prisma.user.updateMany({
+        where: {
+            id: userID
+        },
+        data: {
+            name,
+            email
+        }
+    });
+};
+
 export const updatePassword = async (userId: number, newAuthValue: string, cryptingKey: string) => {
     return prisma.user.updateMany({
         where: {
