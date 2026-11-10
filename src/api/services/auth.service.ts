@@ -1,4 +1,4 @@
-import { createRefreshToken, createUser, deleteRefreshToken, getUserByEmail, findRefreshToken, deleteRefreshTokenById } from "../repositories/auth.repository.js";
+import { createRefreshToken, createUser, deleteRefreshToken, getUserByEmail, findRefreshToken, deleteRefreshTokenById, getKdfSalt } from "../repositories/auth.repository.js";
 import { hashToken, passwordHashing, signAccessToken } from "../../lib/token.js";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
@@ -22,6 +22,15 @@ export const registerUser = async (data: {
 
     const tokens = await issueToken(user.id);
     return { user, tokens };
+};
+
+export const getKdfSaltByEmail = async (email: string) => {
+    const user = await getKdfSalt(email);
+
+    if (!user) {
+        return null;
+    }
+    return { kdfSalt: user.kdfSalt };
 };
 
 const DUMMY_HASH = bcrypt.hashSync("dummy-password", 10);
