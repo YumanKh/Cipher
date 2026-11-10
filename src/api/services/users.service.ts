@@ -1,6 +1,6 @@
 import { passwordHashing } from "../../lib/token.js";
 import { comparePassword } from "../../lib/users.js";
-import { deleteUser, getUser, updatePassword } from "../repositories/users.repository.js";
+import { deleteUser, getUser, updatePassword, updateDatas } from "../repositories/users.repository.js";
 
 export const getUserById = async (userId: number) => {
     return getUser(userId);
@@ -28,6 +28,13 @@ export const deleteUserAccount = async (userId: number, authValue: string) => {
     }
 
     await deleteUserById(userId);
+    return true;
+};
+
+export const updateUserDatas = async (userId: number, name?: string, email?: string) => {
+    const result = await updateDatas(userId, name, email);
+
+    if (result.count === 0) return null;
     return true;
 };
 
