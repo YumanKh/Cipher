@@ -1,0 +1,27 @@
+:root {
+  --paper: #f7faf6;
+  --ink: #123b39;
+  --teal: #174f4b;
+  --teal-2: #286b63;
+  --muted: #668487;
+  --line: #dce9e4;
+  --mint: #dceee7;
+  --serif: "Playfair Display", Georgia, serif;
+  --sans: "DM Sans", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
