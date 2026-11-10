@@ -1,5 +1,4 @@
 import { prisma } from "../../lib/prisma.js";
-import bcrypt from "bcryptjs";
 
 export const createUser = async (data: {
     name: string;
@@ -29,6 +28,15 @@ export const getUserByEmail = async (email: string) => {
             email: true,
             hashedPassword: true,
             cryptingKey: true,
+            kdfSalt: true,
+        },
+    });
+};
+
+export const getKdfSalt = async (email: string) => {
+    return prisma.user.findUnique({
+        where: { email },
+        select: {
             kdfSalt: true,
         },
     });
