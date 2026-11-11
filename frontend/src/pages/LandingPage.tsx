@@ -24,7 +24,7 @@ export default function LandingPage() {
         <div className={styles.navActions}>
           <Link className={styles.loginLink} to="/login">Log in</Link>
           <Link className={styles.cta} to="/register">
-            Sign in<span className={styles.arrow}></span>
+            Register<span className={styles.arrow}></span>
           </Link>
         </div>
       </header>
