@@ -24,7 +24,7 @@ export default function LandingPage() {
         <div className={styles.navActions}>
           <Link className={styles.loginLink} to="/login">Log in</Link>
           <Link className={styles.cta} to="/register">
-            Create free account <span className={styles.arrow}>→</span>
+            Sign in<span className={styles.arrow}></span>
           </Link>
         </div>
       </header>
@@ -41,7 +41,7 @@ export default function LandingPage() {
             </p>
             <div className={styles.heroButtons}>
               <Link className={styles.cta} to="/register">
-                Create your free vault <span className={styles.arrow}>→</span>
+                Create your free vault <span className={styles.arrow}></span>
               </Link>
               <a className={styles.secondary} href="#features">See how it works</a>
             </div>
@@ -105,7 +105,7 @@ export default function LandingPage() {
               </span>
             </a>
             <nav className={styles.footerlinks} aria-label="Footer navigation">
-              <a href="#security">Privacy</a>
+              <a href="#privacy">Privacy</a>
               <a href="#security">Security</a>
               <a href="#help">Help</a>
             </nav>
