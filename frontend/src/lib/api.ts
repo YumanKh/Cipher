@@ -31,7 +31,10 @@ export function prelogin(email: string) {
 }
 
 export function login(email: string, authValue: string) {
-  return request<{ accessToken: string; cryptingKey: string }>('/auth/login', { email, authValue })
+  return request<{
+    accessToken: string
+    user: { cryptingKey: string; name?: string; email?: string }
+  }>('/auth/login', { email, authValue })
 }
 
 export function register(input: {

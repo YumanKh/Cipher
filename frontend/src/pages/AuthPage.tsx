@@ -76,8 +76,9 @@ async function handleSubmit(e: FormEvent) {
         const masterKey = await deriveMasterKey(form.password, fromBase64(kdfSalt))
         const authValue = await computeAuthValue(masterKey)
 
-        const { accessToken, cryptingKey: wrappedKey } = await login(form.email, authValue)
-        const cryptingKey = await unwrapCryptingKey(wrappedKey, masterKey)
+        const { accessToken, user } = await login(form.email, authValue)
+        const cryptingKey = await unwrapCryptingKey(user.cryptingKey, masterKey)
+        setSession({ accessToken, cryptingKey, user: { email: user.email ?? form.email, name: user.name } })
 
         setSession({ accessToken, cryptingKey, user: { email: form.email } })
         navigate('/vault')
