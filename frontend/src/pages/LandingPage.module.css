@@ -45,6 +45,36 @@
 .cta:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(23, 79, 75, .16); }
 .arrow { font-size: 19px; line-height: 0; }
 
+/* ---------- MOBILE MENU (caché en desktop) ---------- */
+.menuToggle {
+  display: none; width: 52px; height: 46px; border: 0; border-radius: 26px;
+  background: rgba(218, 235, 227, .82); place-items: center; color: #174c48; cursor: pointer;
+}
+.menuToggle svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2.3; fill: none; stroke-linecap: round; }
+
+.drawerBackdrop {
+  position: fixed; inset: 0; z-index: 20; background: rgba(8, 35, 33, .34);
+  opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s;
+}
+.drawerBackdrop.open { opacity: 1; visibility: visible; }
+.drawer {
+  position: fixed; top: 0; right: 0; z-index: 21;
+  width: min(86vw, 340px); height: 100dvh; padding: 26px 24px;
+  background: var(--paper); box-shadow: -18px 0 50px rgba(10, 45, 42, .16);
+  transform: translateX(105%); transition: transform .25s ease;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.drawer.open { transform: translateX(0); }
+.drawerTop { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.drawerClose { border: 0; background: #e1eee8; border-radius: 50%; width: 42px; height: 42px; font-size: 24px; line-height: 1; color: var(--ink); cursor: pointer; }
+.drawer a { padding: 13px 2px; border-bottom: 1px solid var(--line); font-size: 17px; color: #153f3e; }
+.drawerLogin { font-weight: 600; }
+.drawerCta {
+  margin-top: 10px; border-bottom: 0 !important; text-align: center;
+  border-radius: 28px; padding: 15px;
+  background: linear-gradient(110deg, #174d49, #205e56); color: #fff !important;
+}
+
 /* ---------- HERO ---------- */
 .hero { height: 580px; position: relative; overflow: hidden; isolation: isolate; background: #f5f8f3; }
 .heroArt {
@@ -100,8 +130,9 @@
   display: grid; place-items: center; background: #e0eee7; color: #174e49; margin-bottom: 15px;
 }
 .featureIcon svg { width: 34px; height: 34px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.featureTitle { position: relative; z-index: 1; font: 500 23px/1.2 var(--serif); letter-spacing: -.35px; margin: 0 0 10px; color: #143f3d; }
-.featureDesc { position: relative; z-index: 1; font-size: 16px; line-height: 1.5; color: #789092; margin: 0; max-width: 285px; }
+.featureText { position: relative; z-index: 1; }
+.featureTitle { font: 500 23px/1.2 var(--serif); letter-spacing: -.35px; margin: 0 0 10px; color: #143f3d; }
+.featureDesc { font-size: 16px; line-height: 1.5; color: #789092; margin: 0; max-width: 285px; }
 
 /* ---------- FOOTER ---------- */
 .footer {
@@ -146,13 +177,16 @@
   .brandName { font-size: 25px; }
   .brandTag { font-size: 10px; }
   .navlinks { display: none; }
-  .navActions { gap: 13px; }
-  .loginLink { font-size: 13px; }
-  .navActions .cta { min-height: 40px; padding: 9px 14px; font-size: 12px; border-radius: 22px; }
-  .hero { height: auto; min-height: 760px; display: flex; align-items: flex-start; }
-  .heroArt { inset: 0; background-size: auto 390px; background-repeat: no-repeat; background-position: 57% bottom; }
-  .hero::before { background: linear-gradient(180deg, #f8faf6 0%, rgba(248, 250, 246, .98) 38%, rgba(248, 250, 246, .78) 56%, rgba(248, 250, 246, .05) 100%); }
-  .heroContent { padding: 109px 22px 340px; max-width: 100%; width: 100%; }
+  .navActions { display: none; }
+  .menuToggle { display: grid; }
+  .hero { height: auto; min-height: 520px; display: flex; align-items: flex-start; }
+  .heroArt { inset: 0; background-size: auto 100%; background-position: 66% center; background-repeat: no-repeat; }
+  .hero::before {
+    background:
+      linear-gradient(90deg, #f7faf6 0%, rgba(247, 250, 246, .97) 28%, rgba(247, 250, 246, .77) 51%, rgba(247, 250, 246, .06) 100%),
+      linear-gradient(180deg, rgba(247, 250, 246, .1) 0%, rgba(247, 250, 246, 0) 55%, #f7faf6 100%);
+  }
+  .heroContent { padding: 100px 22px 54px; max-width: 100%; width: 100%; }
   .eyebrow { font-size: 10px; letter-spacing: 1px; margin-bottom: 15px; }
   .heroTitle { font-size: 52px; line-height: 1.02; letter-spacing: -1.8px; margin-bottom: 17px; max-width: 440px; }
   .heroCopy { font-size: 16px; line-height: 1.48; max-width: 370px; margin-bottom: 18px; }
@@ -163,26 +197,33 @@
   .trustItem { gap: 5px; }
   .trustIcon { width: 17px; height: 20px; }
   .trustIcon svg { width: 18px; height: 20px; }
-  .features { grid-template-columns: 1fr; gap: 13px; padding: 22px 19px 105px; }
-  .feature { min-height: 164px; padding: 18px 19px; border-radius: 15px; }
-  .featureIcon { width: 54px; height: 54px; margin-bottom: 11px; }
-  .featureIcon svg { width: 28px; height: 28px; }
-  .featureTitle { font-size: 21px; margin-bottom: 7px; }
-  .featureDesc { font-size: 14px; max-width: 280px; }
-  .feature::after { width: 180px; height: 160px; right: -18px; bottom: -45px; opacity: .5; }
-  .footer { padding: 36px 20px 24px; background-size: auto 310px; }
-  .footerLogo { width: 30px; height: 30px; }
-  .footerName { font-size: 20px; }
-  .footerTag { font-size: 11px; }
-  .footerlinks { gap: 18px; font-size: 12px; }
-  .footerDivider { margin: 20px 0 14px; }
-  .footerCopy { font-size: 11px; }
+  .features { grid-template-columns: 1fr; gap: 13px; padding: 22px 19px 24px; }
+  .feature {
+    display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 16px;
+    min-height: 0; padding: 18px; border-radius: 16px;
+  }
+  .featureIcon { width: 58px; height: 58px; margin-bottom: 0; }
+  .featureIcon svg { width: 30px; height: 30px; }
+  .featureTitle { font-size: 19px; margin-bottom: 5px; }
+  .featureDesc { font-size: 14px; max-width: none; }
+  .page { background-image: url('../assets/footer-leaves-mobile.png'); }
+  .footer {
+    position: relative; z-index: 1;
+    background: transparent;
+    padding: 150px 22px 30px;
+  }
+  .footerTop { gap: 14px; }
+  .footerLogo { width: 28px; height: 28px; }
+  .footerName { font-size: 18px; }
+  .footerTag { display: none; }
+  .footerlinks { gap: 16px; font-size: 11px; }
+  .footerDivider { margin: 5px 0 -5px; }
+  .footerCopy { font-size: 10px; }
+  .footerInner { transform: translateY(33px); }
 }
 @media (max-width: 390px) {
-  .navActions { gap: 9px; }
-  .navActions .cta { padding: 9px 11px; font-size: 11px; }
   .heroTitle { font-size: 47px; }
-  .hero { min-height: 746px; }
+  .hero { min-height: 490px; }
   .heroContent { padding-left: 18px; padding-right: 18px; }
   .trustline { gap: 10px; }
   .footerlinks { gap: 11px; font-size: 10px; }
