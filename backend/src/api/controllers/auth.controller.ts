@@ -104,7 +104,7 @@ export const refresh = async (req: Request, res: Response) => {
             return;
         }
 
-        res.status(200).cookie("refreshToken", refreshedTokens.tokens.refreshToken, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict", path: "/auth", maxAge: 30 * 24 * 60 * 60 * 1000 }).json({ accessToken: refreshedTokens.tokens.accessToken });
+        res.status(200).cookie("refreshToken", refreshedTokens.tokens.refreshToken, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict", path: "/auth", maxAge: 30 * 24 * 60 * 60 * 1000 }).json({ accessToken: refreshedTokens.tokens.accessToken, user: refreshedTokens.user });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }

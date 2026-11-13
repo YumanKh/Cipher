@@ -1,4 +1,4 @@
-import { createRefreshToken, createUser, deleteRefreshToken, getUserByEmail, findRefreshToken, deleteRefreshTokenById, getKdfSalt } from "../repositories/auth.repository.js";
+import { createRefreshToken, createUser, deleteRefreshToken, getUserByEmail, findRefreshToken, deleteRefreshTokenById, getKdfSalt, getUserById } from "../repositories/auth.repository.js";
 import { hashToken, passwordHashing, signAccessToken } from "../../lib/token.js";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
@@ -80,7 +80,12 @@ export const refreshUserToken = async (refreshToken: string) => {
         return null;
     }
 
+    const user = await getUserById(token.userId);
+    if (!user) {
+        return null;
+    }
+
     await deleteRefreshTokenById(token.id);
     const { refreshToken: newRefreshToken, accessToken } = await issueToken(token.userId);
-    return { tokens: { accessToken: accessToken, refreshToken: newRefreshToken } };
+    return { user, tokens: { accessToken: accessToken, refreshToken: newRefreshToken } };
 };
