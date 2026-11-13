@@ -47,7 +47,12 @@ async function authRequest<T>(path: string, options: { method?: string; body?: u
   if (res.status === 401) {
     try {
       const { accessToken, user } = await refresh()
-      useAuthStore.getState().restore({ accessToken, user })
+      useAuthStore.getState().restore({
+        accessToken,
+        user: { email: user.email, name: user.name },
+        wrappedKey: user.cryptingKey,
+        kdfSalt: user.kdfSalt,
+      })
       res = await doFetch()
     } catch {
       useAuthStore.getState().clear()
@@ -82,7 +87,7 @@ export function register(input: {
 }
 
 export function refresh() {
-  return request<{ accessToken: string; user: { email: string; name?: string } }>('/auth/refresh', {})
+  return request<{ accessToken: string; user: { email: string; name?: string; cryptingKey: string; kdfSalt: string } }>('/auth/refresh', {})
 }
 
 export type NoteRow = { id: number; title: string; content: string; iv: string; isFavorite: boolean }

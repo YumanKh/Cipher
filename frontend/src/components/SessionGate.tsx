@@ -12,7 +12,14 @@ export default function SessionGate({ children }: { children: ReactNode }) {
     if (ran.current) return
     ran.current = true
     refresh()
-      .then(({ accessToken, user }) => restore({ accessToken, user }))
+      .then(({ accessToken, user }) =>
+        restore({
+          accessToken,
+          user: { email: user.email, name: user.name },
+          wrappedKey: user.cryptingKey,
+          kdfSalt: user.kdfSalt,
+        }),
+      )
       .catch(() => setGuest())
   }, [restore, setGuest])
 
