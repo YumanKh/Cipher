@@ -80,7 +80,6 @@ async function handleSubmit(e: FormEvent) {
         const cryptingKey = await unwrapCryptingKey(user.cryptingKey, masterKey)
         setSession({ accessToken, cryptingKey, user: { email: user.email ?? form.email, name: user.name } })
 
-        setSession({ accessToken, cryptingKey, user: { email: form.email } })
         navigate('/vault')
         }
     } catch (err) {

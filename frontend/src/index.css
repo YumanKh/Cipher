@@ -25,3 +25,11 @@ button { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(20, 63, 61, .16); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active { background: rgba(20, 63, 61, .16) !important; }
+.main { scrollbar-width: thin; scrollbar-color: rgba(20, 63, 61, .2) transparent; }
+.detail { scrollbar-width: thin; scrollbar-color: rgba(20, 63, 61, .2) transparent; }
