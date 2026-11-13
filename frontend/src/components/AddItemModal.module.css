@@ -1,0 +1,31 @@
+.overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(18, 59, 57, .35);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  display: grid; place-items: center; padding: 20px;
+}
+.modal {
+  width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 20px;
+  padding: 24px; box-shadow: 0 20px 60px rgba(18, 59, 57, .2);
+}
+.head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.title { font: 700 20px var(--serif); color: var(--ink); margin: 0; }
+.close { border: 0; background: transparent; font-size: 26px; line-height: 1; color: var(--muted); cursor: pointer; padding: 0 4px; }
+.typeToggle { display: flex; gap: 6px; background: #eef2ee; padding: 4px; border-radius: 12px; margin-bottom: 18px; }
+.typeBtn { flex: 1; border: 0; background: transparent; padding: 9px; border-radius: 9px; font-size: 14px; font-weight: 500; color: var(--muted); cursor: pointer; }
+.typeActive { background: #16514c; color: #fff; }
+.form { display: flex; flex-direction: column; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.label { font-size: 13px; color: var(--muted); }
+.input, .textarea {
+  width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px;
+  font: 15px var(--sans); color: var(--ink); background: #fcfdfb; outline: none;
+}
+.input:focus, .textarea:focus { border-color: var(--teal-2); }
+.textarea { resize: vertical; }
+.error { color: #c4453d; font-size: 13px; margin: 0; }
+.actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+.cancel { border: 1px solid var(--line); background: #fcfdfb; color: var(--ink); height: 44px; padding: 0 18px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.save { border: 0; background: #16514c; color: #fff; height: 44px; padding: 0 22px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.save:disabled { opacity: .6; cursor: default; }

@@ -70,3 +70,16 @@ export async function unwrapCryptingKey(wrapped: string, masterKey: ArrayBuffer)
   const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct)
   return new Uint8Array(plain)
 }
+
+export async function encryptData(plaintext: string, cryptingKey: Bytes): Promise<{ content: string; iv: string }> {
+  const iv = crypto.getRandomValues(new Uint8Array(12))
+  const key = await crypto.subtle.importKey('raw', cryptingKey, { name: 'AES-GCM' }, false, ['encrypt'])
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(plaintext))
+  return { content: toBase64(ciphertext), iv: toBase64(iv) }
+}
+
+export async function decryptData(content: string, iv: string, cryptingKey: Bytes): Promise<string> {
+  const key = await crypto.subtle.importKey('raw', cryptingKey, { name: 'AES-GCM' }, false, ['decrypt'])
+  const plaintext = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromBase64(iv) }, key, fromBase64(content))
+  return new TextDecoder().decode(plaintext)
+}

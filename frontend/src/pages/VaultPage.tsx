@@ -2,6 +2,8 @@ import { useState } from 'react'
 import styles from './VaultPage.module.css'
 import logo from '../assets/logo.png'
 import { useAuthStore } from '../stores/authStore'
+import { useVaultItems } from '../hooks/useVaultItems'
+import AddItemModal from '../components/AddItemModal'
 
 const NAV = [
   { id: 'home', label: 'Home', icon: HomeIcon },
@@ -11,18 +13,7 @@ const NAV = [
   { id: 'settings', label: 'Settings', icon: SettingsIcon },
 ]
 
-type RecentItem = { name: string; sub: string; type: 'Password' | 'Note'; time: string }
-
-const RECENT: RecentItem[] = [
-  { name: 'GitHub', sub: 'github.com', type: 'Password', time: '2 hours ago' },
-  { name: 'Personal Notes', sub: 'Ideas, projects, goals...', type: 'Note', time: '3 hours ago' },
-  { name: 'Netflix', sub: 'netflix.com', type: 'Password', time: '5 hours ago' },
-  { name: 'Bank Account', sub: 'Chase Bank', type: 'Password', time: '1 day ago' },
-  { name: 'Study Plan', sub: 'Python, Game Dev, etc.', type: 'Note', time: '1 day ago' },
-  { name: 'Google', sub: 'google.com', type: 'Password', time: '2 days ago' },
-  { name: 'Work Ideas', sub: 'App ideas, features, etc.', type: 'Note', time: '3 days ago' },
-  { name: 'Spotify', sub: 'spotify.com', type: 'Password', time: '4 days ago' },
-]
+type DecryptedFields = { username?: string; password?: string; notes?: string }
 
 export default function VaultPage() {
   const [active, setActive] = useState('home')
@@ -31,23 +22,23 @@ export default function VaultPage() {
   const initials = getInitials(displayName)
   const [filter, setFilter] = useState<'all' | 'passwords' | 'notes'>('all')
   const firstName = displayName.split(/[\s@]/)[0]
-  const recent = RECENT.filter((i) =>
+
+  const { items, isLoading } = useVaultItems()
+  const passwordsCount = items.filter((i) => i.type === 'Password').length
+  const notesCount = items.filter((i) => i.type === 'Note').length
+  const favoritesCount = items.filter((i) => i.isFavorite).length
+  const recent = items.filter((i) =>
     filter === 'all' ||
     (filter === 'passwords' && i.type === 'Password') ||
     (filter === 'notes' && i.type === 'Note'),
   )
+
+  const [selectedKey, setSelectedKey] = useState<string | null>(null)
+  const selected = items.find((i) => `${i.type}-${i.id}` === selectedKey) ?? null
   const [showPwd, setShowPwd] = useState(false)
   const copy = (text: string) => navigator.clipboard.writeText(text)
-  const selected = {
-    name: 'GitHub',
-    domain: 'github.com',
-    type: 'Password',
-    username: 'yuman_khoufache',
-    password: 'supersecret123',
-    website: 'https://github.com',
-    notes: 'Used for personal and project repositories. Make sure to enable 2FA for extra security.',
-    updated: '2 hours ago',
-  }
+  const [decrypted] = useState<DecryptedFields | null>(null)
+  const [showAdd, setShowAdd] = useState(false)
 
   return (
     <div className={styles.app}>
@@ -111,17 +102,17 @@ export default function VaultPage() {
         <section className={styles.stats}>
           <div className={styles.statCard}>
             <span className={`${styles.statIcon} ${styles.statGreen}`}><LockIcon /></span>
-            <div><div className={styles.statNum}>8</div><div className={styles.statLabel}>Passwords</div></div>
+            <div><div className={styles.statNum}>{passwordsCount}</div><div className={styles.statLabel}>Passwords</div></div>
           </div>
           <div className={styles.statCard}>
             <span className={`${styles.statIcon} ${styles.statBlue}`}><NotesIcon /></span>
-            <div><div className={styles.statNum}>5</div><div className={styles.statLabel}>Notes</div></div>
+            <div><div className={styles.statNum}>{notesCount}</div><div className={styles.statLabel}>Notes</div></div>
           </div>
           <div className={styles.statCard}>
             <span className={`${styles.statIcon} ${styles.statGold}`}><StarIcon /></span>
-            <div><div className={styles.statNum}>3</div><div className={styles.statLabel}>Favorites</div></div>
+            <div><div className={styles.statNum}>{favoritesCount}</div><div className={styles.statLabel}>Favorites</div></div>
           </div>
-          <button className={styles.addNew}><PlusIcon /> Add New</button>
+          <button className={styles.addNew} onClick={() => setShowAdd(true)}><PlusIcon /> Add New</button>
         </section>
 
         <section className={styles.recent}>
@@ -141,80 +132,111 @@ export default function VaultPage() {
           </div>
 
           <div className={styles.itemList}>
-            {recent.map((item) => (
-              <button key={item.name} className={styles.item}>
-                <span className={styles.itemIcon}>{item.name[0]}</span>
-                <span className={styles.itemMain}>
-                  <span className={styles.itemName}>{item.name}</span>
-                  <span className={styles.itemSub}>{item.sub}</span>
-                </span>
-                <span className={`${styles.badge} ${item.type === 'Password' ? styles.badgePwd : styles.badgeNote}`}>
-                  {item.type}
-                </span>
-                <span className={styles.itemTime}>{item.time}</span>
-                <span className={styles.itemMenu}><DotsIcon /></span>
-              </button>
-            ))}
+            {isLoading ? (
+              <div className={styles.placeholder} style={{ padding: 18 }}>Loading…</div>
+            ) : recent.length === 0 ? (
+              <div className={styles.placeholder} style={{ padding: 18 }}>No items yet.</div>
+            ) : (
+              recent.map((item) => (
+                <button
+                  key={`${item.type}-${item.id}`}
+                  className={styles.item}
+                  onClick={() => setSelectedKey(`${item.type}-${item.id}`)}
+                >
+                  <span className={styles.itemIcon}>{item.title[0]}</span>
+                  <span className={styles.itemMain}>
+                    <span className={styles.itemName}>{item.title}</span>
+                    {item.link && <span className={styles.itemSub}>{item.link}</span>}
+                  </span>
+                  <span className={`${styles.badge} ${item.type === 'Password' ? styles.badgePwd : styles.badgeNote}`}>
+                    {item.type}
+                  </span>
+                  <span className={styles.itemMenu}><DotsIcon /></span>
+                </button>
+              ))
+            )}
           </div>
         </section>
       </main>
 
       <section className={styles.detail}>
-        <div className={styles.detailCard}>
-          <div className={styles.detailHead}>
-            <span className={styles.detailIcon}>{selected.name[0]}</span>
-            <div className={styles.detailTitle}>
-              <div className={styles.detailName}>{selected.name}</div>
-              <div className={styles.detailDomain}>{selected.domain}</div>
-              <span className={`${styles.badge} ${styles.badgePwd}`}>{selected.type}</span>
-            </div>
-            <button className={`${styles.iconBtn} ${styles.starBtn}`} aria-label="Favorite"><StarIcon /></button>
-            <button className={styles.iconBtn} aria-label="More"><DotsIcon /></button>
-          </div>
+        {!selected ? (
+          <div className={styles.placeholder} style={{ padding: 24 }}>Select an item to view its details.</div>
+        ) : (
+          <>
+            <div className={styles.detailCard}>
+              <div className={styles.detailHead}>
+                <span className={styles.detailIcon}>{selected.title[0]}</span>
+                <div className={styles.detailTitle}>
+                  <div className={styles.detailName}>{selected.title}</div>
+                  {selected.link && <div className={styles.detailDomain}>{selected.link}</div>}
+                  <span className={`${styles.badge} ${selected.type === 'Password' ? styles.badgePwd : styles.badgeNote}`}>{selected.type}</span>
+                </div>
+                <button className={`${styles.iconBtn} ${selected.isFavorite ? styles.starBtn : ''}`} aria-label="Favorite"><StarIcon /></button>
+                <button className={styles.iconBtn} aria-label="More"><DotsIcon /></button>
+              </div>
 
-          <div className={styles.fields}>
-            <div className={styles.field}>
-              <div className={styles.fieldLabel}>Username</div>
-              <div className={styles.fieldRow}>
-                <span className={styles.fieldValue}>{selected.username}</span>
-                <button className={styles.copyBtn} onClick={() => copy(selected.username)} aria-label="Copy"><CopyIcon /></button>
+              <div className={styles.fields}>
+                {decrypted && (
+                  <>
+                    <div className={styles.field}>
+                      <div className={styles.fieldLabel}>Username</div>
+                      <div className={styles.fieldRow}>
+                        <span className={styles.fieldValue}>{decrypted.username}</span>
+                        <button className={styles.copyBtn} onClick={() => copy(decrypted.username ?? '')} aria-label="Copy"><CopyIcon /></button>
+                      </div>
+                    </div>
+                    <div className={styles.field}>
+                      <div className={styles.fieldLabel}>Password</div>
+                      <div className={styles.fieldRow}>
+                        <span className={styles.fieldValue}>{showPwd ? decrypted.password : '••••••••••••'}</span>
+                        <button className={styles.copyBtn} onClick={() => setShowPwd((s) => !s)} aria-label="Reveal">{showPwd ? <EyeIcon /> : <EyeOffIcon />}</button>
+                        <button className={styles.copyBtn} onClick={() => copy(decrypted.password ?? '')} aria-label="Copy"><CopyIcon /></button>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {!decrypted && (
+                  <div className={styles.field}>
+                    <div className={styles.fieldLabel}>Encrypted content</div>
+                    <div className={styles.fieldRow}>
+                      <span className={styles.fieldValue}>Will decrypt once wired</span>
+                    </div>
+                  </div>
+                )}
+
+                {selected.link && (
+                  <div className={styles.field}>
+                    <div className={styles.fieldLabel}>Website</div>
+                    <div className={styles.fieldRow}>
+                      <a className={styles.fieldLink} href={selected.link} target="_blank" rel="noreferrer">{selected.link}</a>
+                      <a className={styles.copyBtn} href={selected.link} target="_blank" rel="noreferrer" aria-label="Open"><ExternalIcon /></a>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-            <div className={styles.field}>
-              <div className={styles.fieldLabel}>Password</div>
-              <div className={styles.fieldRow}>
-                <span className={styles.fieldValue}>{showPwd ? selected.password : '••••••••••••'}</span>
-                <button className={styles.copyBtn} onClick={() => setShowPwd((s) => !s)} aria-label="Reveal">{showPwd ? <EyeIcon /> : <EyeOffIcon />}</button>
-                <button className={styles.copyBtn} onClick={() => copy(selected.password)} aria-label="Copy"><CopyIcon /></button>
+
+            <div className={styles.notesCard}>
+              <div className={styles.notesHead}>
+                <span className={styles.notesHeadLeft}><NotesIcon /> Notes</span>
+                <ChevronIcon />
               </div>
+              <p className={styles.notesText}>{decrypted?.notes ?? 'Encrypted — will appear once decryption is wired.'}</p>
             </div>
-            <div className={styles.field}>
-              <div className={styles.fieldLabel}>Website</div>
-              <div className={styles.fieldRow}>
-                <a className={styles.fieldLink} href={selected.website} target="_blank" rel="noreferrer">{selected.website}</a>
-                <a className={styles.copyBtn} href={selected.website} target="_blank" rel="noreferrer" aria-label="Open"><ExternalIcon /></a>
-              </div>
+
+            <div className={styles.detailActions}>
+              <button className={styles.editBtn}><EditIcon /> Edit</button>
+              <button className={styles.deleteBtn}><TrashIcon /> Delete</button>
             </div>
-          </div>
-        </div>
 
-        <div className={styles.notesCard}>
-          <div className={styles.notesHead}>
-            <span className={styles.notesHeadLeft}><NotesIcon /> Notes</span>
-            <ChevronIcon />
-          </div>
-          <p className={styles.notesText}>{selected.notes}</p>
-        </div>
-
-        <div className={styles.updated}><ClockIcon /> Updated {selected.updated}</div>
-
-        <div className={styles.detailActions}>
-          <button className={styles.editBtn}><EditIcon /> Edit</button>
-          <button className={styles.deleteBtn}><TrashIcon /> Delete</button>
-        </div>
-
-        <div className={styles.detailBanner} aria-hidden="true" />
+            <div className={styles.detailBanner} aria-hidden="true" />
+          </>
+        )}
       </section>
+
+      {showAdd && <AddItemModal onClose={() => setShowAdd(false)} />}
     </div>
   )
 }
@@ -271,9 +293,6 @@ function ExternalIcon() {
 }
 function ChevronIcon() {
   return (<svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>)
-}
-function ClockIcon() {
-  return (<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>)
 }
 function EditIcon() {
   return (<svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>)
