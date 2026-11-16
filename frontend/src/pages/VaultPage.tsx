@@ -31,11 +31,15 @@ export default function VaultPage() {
   const passwordsCount = items.filter((i) => i.type === 'Password').length
   const notesCount = items.filter((i) => i.type === 'Note').length
   const favoritesCount = items.filter((i) => i.isFavorite).length
-  const recent = items.filter((i) =>
-    filter === 'all' ||
-    (filter === 'passwords' && i.type === 'Password') ||
-    (filter === 'notes' && i.type === 'Note'),
-  )
+  const [query, setQuery] = useState('')
+  const recent = items.filter((i) => {
+    const matchesFilter =
+      filter === 'all' ||
+      (filter === 'passwords' && i.type === 'Password') ||
+      (filter === 'notes' && i.type === 'Note')
+    const matchesQuery = i.title.toLowerCase().includes(query.toLowerCase())
+    return matchesFilter && matchesQuery
+  })
 
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const selected = items.find((i) => `${i.type}-${i.id}` === selectedKey) ?? null
@@ -114,7 +118,7 @@ export default function VaultPage() {
       <header className={styles.header}>
         <div className={styles.search}>
           <SearchIcon />
-          <input placeholder="Search passwords, notes, or categories..." />
+          <input placeholder="Search passwords, notes, or categories..." value={query} onChange={(e) => setQuery(e.target.value)} />
         </div>
         <div className={styles.user}>
           <span className={styles.avatar}>{initials}</span>
@@ -171,7 +175,7 @@ export default function VaultPage() {
             ) : (
               recent.map((item) => (
                 <button
-                  key={`${item.type}-${item.id}`}
+                  key={`${item.type}-${item.id}-${filter}-${query}`}
                   className={styles.item}
                   onClick={() => setSelectedKey(`${item.type}-${item.id}`)}
                 >
