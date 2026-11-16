@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styles from './VaultPage.module.css'
 import logo from '../assets/logo.png'
 import { useAuthStore } from '../stores/authStore'
 import { useVaultItems } from '../hooks/useVaultItems'
+import { decryptData } from '../lib/crypto'
 import AddItemModal from '../components/AddItemModal'
+import { useToggleFavorite } from '../hooks/useToggleFavorite'
 
 const NAV = [
   { id: 'home', label: 'Home', icon: HomeIcon },
@@ -37,8 +39,24 @@ export default function VaultPage() {
   const selected = items.find((i) => `${i.type}-${i.id}` === selectedKey) ?? null
   const [showPwd, setShowPwd] = useState(false)
   const copy = (text: string) => navigator.clipboard.writeText(text)
-  const [decrypted] = useState<DecryptedFields | null>(null)
+  const [decrypted, setDecrypted] = useState<DecryptedFields | null>(null)
   const [showAdd, setShowAdd] = useState(false)
+  const toggleFav = useToggleFavorite()
+  
+  useEffect(() => {
+    let cancelled = false
+    setShowPwd(false)
+    if (!selected) { setDecrypted(null); return }
+    const stored = useAuthStore.getState().cryptingKey
+    if (!stored) { setDecrypted(null); return }
+    decryptData(selected.content, selected.iv, Uint8Array.from(stored))
+      .then((plaintext) => {
+        if (cancelled) return
+        setDecrypted(selected.type === 'Password' ? JSON.parse(plaintext) : { notes: plaintext })
+      })
+      .catch(() => { if (!cancelled) setDecrypted(null) })
+    return () => { cancelled = true }
+  }, [selected])
 
   return (
     <div className={styles.app}>
@@ -172,12 +190,12 @@ export default function VaultPage() {
                   {selected.link && <div className={styles.detailDomain}>{selected.link}</div>}
                   <span className={`${styles.badge} ${selected.type === 'Password' ? styles.badgePwd : styles.badgeNote}`}>{selected.type}</span>
                 </div>
-                <button className={`${styles.iconBtn} ${selected.isFavorite ? styles.starBtn : ''}`} aria-label="Favorite"><StarIcon /></button>
+                <button className={`${styles.iconBtn} ${selected.isFavorite ? styles.starBtn : ''}`} onClick={() => toggleFav.mutate(selected)} aria-label="Favorite"><StarIcon /></button>
                 <button className={styles.iconBtn} aria-label="More"><DotsIcon /></button>
               </div>
 
               <div className={styles.fields}>
-                {decrypted && (
+                {selected.type === 'Password' && decrypted && (
                   <>
                     <div className={styles.field}>
                       <div className={styles.fieldLabel}>Username</div>
@@ -197,15 +215,6 @@ export default function VaultPage() {
                   </>
                 )}
 
-                {!decrypted && (
-                  <div className={styles.field}>
-                    <div className={styles.fieldLabel}>Encrypted content</div>
-                    <div className={styles.fieldRow}>
-                      <span className={styles.fieldValue}>Will decrypt once wired</span>
-                    </div>
-                  </div>
-                )}
-
                 {selected.link && (
                   <div className={styles.field}>
                     <div className={styles.fieldLabel}>Website</div>
@@ -223,7 +232,7 @@ export default function VaultPage() {
                 <span className={styles.notesHeadLeft}><NotesIcon /> Notes</span>
                 <ChevronIcon />
               </div>
-              <p className={styles.notesText}>{decrypted?.notes ?? 'Encrypted — will appear once decryption is wired.'}</p>
+              <p className={styles.notesText}>{decrypted?.notes || 'No notes.'}</p>
             </div>
 
             <div className={styles.detailActions}>

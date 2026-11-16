@@ -108,3 +108,19 @@ export function createPassword(input: { title: string; link?: string; content: s
 export function createNote(input: { title: string; content: string; iv: string }) {
   return authRequest<{ note: NoteRow }>('/notes', { method: 'POST', body: input })
 }
+
+export function updateNoteFavorite(id: number, isFavorite: boolean) {
+  return authRequest<{ updated: boolean }>(`/notes/${id}`, { method: 'PATCH', body: { isFavorite } })
+}
+
+export function updatePasswordFavorite(id: number, isFavorite: boolean) {
+  return authRequest<{ updated: boolean }>(`/passwords/${id}`, { method: 'PATCH', body: { isFavorite } })
+}
+
+export function deleteNote(id: number) {
+  return authRequest<{ deleted: boolean }>(`/notes/${id}`, { method: 'DELETE' })
+}
+
+export function deletePassword(id: number) {
+  return authRequest<{ deleted: boolean }>(`/passwords/${id}`, { method: 'DELETE' })
+}

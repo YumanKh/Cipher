@@ -33,7 +33,7 @@ export default function UnlockScreen() {
     <div className={styles.wrap}>
       <form className={styles.card} onSubmit={submit}>
         <h1 className={styles.title}>Unlock your vault</h1>
-        <p className={styles.sub}>Welcome back{user?.name ? `, ${user.name}` : ''}. Enter your master password to decrypt your vault.</p>
+        <p className={styles.sub}>Welcome back{user?.name ? `, ${user.name}` : ''}. Enter your password to access your vault.</p>
         <input
           className={styles.input}
           type="password"
