@@ -124,3 +124,11 @@ export function deleteNote(id: number) {
 export function deletePassword(id: number) {
   return authRequest<{ deleted: boolean }>(`/passwords/${id}`, { method: 'DELETE' })
 }
+
+export function updateNote(id: number, input: { title: string; content: string; iv: string }) {
+  return authRequest<{ updated: boolean }>(`/notes/${id}`, { method: 'PATCH', body: input })
+}
+
+export function updatePassword(id: number, input: { title: string; link?: string; content: string; iv: string }) {
+  return authRequest<{ updated: boolean }>(`/passwords/${id}`, { method: 'PATCH', body: input })
+}

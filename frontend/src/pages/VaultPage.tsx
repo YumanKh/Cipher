@@ -4,7 +4,7 @@ import logo from '../assets/logo.png'
 import { useAuthStore } from '../stores/authStore'
 import { useVaultItems } from '../hooks/useVaultItems'
 import { decryptData } from '../lib/crypto'
-import AddItemModal from '../components/AddItemModal'
+import AddItemModal, { type EditTarget } from '../components/AddItemModal'
 import { useToggleFavorite } from '../hooks/useToggleFavorite'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { useDeleteItem } from '../hooks/useDeleteItem'
@@ -46,6 +46,7 @@ export default function VaultPage() {
   const toggleFav = useToggleFavorite()
   const del = useDeleteItem()
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [editItem, setEditItem] = useState<EditTarget | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -61,6 +62,15 @@ export default function VaultPage() {
       .catch(() => { if (!cancelled) setDecrypted(null) })
     return () => { cancelled = true }
   }, [selected])
+
+  const openEdit = () => {
+    if (!selected || !decrypted) return
+    setEditItem(
+      selected.type === 'Password'
+        ? { id: selected.id, type: 'Password', title: selected.title, link: selected.link, username: decrypted.username, password: decrypted.password, notes: decrypted.notes }
+        : { id: selected.id, type: 'Note', title: selected.title, link: null, content: decrypted.notes },
+    )
+  }
 
   return (
     <div className={styles.app}>
@@ -240,7 +250,7 @@ export default function VaultPage() {
             </div>
 
             <div className={styles.detailActions}>
-              <button className={styles.editBtn}><EditIcon /> Edit</button>
+              <button className={styles.editBtn} onClick={openEdit}><EditIcon /> Edit</button>
               <button className={styles.deleteBtn} onClick={() => setConfirmDelete(true)}><TrashIcon /> Delete</button>
             </div>
 
@@ -258,8 +268,9 @@ export default function VaultPage() {
           onCancel={() => setConfirmDelete(false)}
         />
       )}
-      
+
       {showAdd && <AddItemModal onClose={() => setShowAdd(false)} />}
+      {editItem && <AddItemModal item={editItem} onClose={() => setEditItem(null)} />}
     </div>
   )
 }

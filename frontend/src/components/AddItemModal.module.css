@@ -29,3 +29,7 @@
 .cancel { border: 1px solid var(--line); background: #fcfdfb; color: var(--ink); height: 44px; padding: 0 18px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
 .save { border: 0; background: #16514c; color: #fff; height: 44px; padding: 0 22px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
 .save:disabled { opacity: .6; cursor: default; }
+.inputWrap { position: relative; }
+.inputWrap .input { width: 100%; padding-right: 44px; }
+.eye { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: var(--muted); cursor: pointer; display: grid; place-items: center; width: 30px; height: 30px; }
+.eye svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
