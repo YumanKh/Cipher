@@ -20,12 +20,11 @@ const NAV = [
 type DecryptedFields = { username?: string; password?: string; notes?: string }
 
 export default function VaultPage() {
-  const [active, setActive] = useState('home')
   const currentUser = useAuthStore((s) => s.user)
   const displayName = currentUser?.name || currentUser?.email || 'User'
   const initials = getInitials(displayName)
-  const [filter, setFilter] = useState<'all' | 'passwords' | 'notes'>('all')
   const firstName = displayName.split(/[\s@]/)[0]
+  const [category, setCategory] = useState<'all' | 'passwords' | 'notes' | 'favorites'>('all')
 
   const { items, isLoading } = useVaultItems()
   const passwordsCount = items.filter((i) => i.type === 'Password').length
@@ -33,12 +32,13 @@ export default function VaultPage() {
   const favoritesCount = items.filter((i) => i.isFavorite).length
   const [query, setQuery] = useState('')
   const recent = items.filter((i) => {
-    const matchesFilter =
-      filter === 'all' ||
-      (filter === 'passwords' && i.type === 'Password') ||
-      (filter === 'notes' && i.type === 'Note')
+    const matchesCategory =
+      category === 'all' ||
+      (category === 'passwords' && i.type === 'Password') ||
+      (category === 'notes' && i.type === 'Note') ||
+      (category === 'favorites' && i.isFavorite)
     const matchesQuery = i.title.toLowerCase().includes(query.toLowerCase())
-    return matchesFilter && matchesQuery
+    return matchesCategory && matchesQuery
   })
 
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
@@ -91,11 +91,15 @@ export default function VaultPage() {
           <nav className={styles.nav}>
             {NAV.map((item) => {
               const Icon = item.icon
+              const isActive = item.id === 'home' ? category === 'all' : item.id === category
               return (
                 <button
                   key={item.id}
-                  className={`${styles.navItem} ${active === item.id ? styles.navActive : ''}`}
-                  onClick={() => setActive(item.id)}
+                  className={`${styles.navItem} ${isActive ? styles.navActive : ''}`}
+                  onClick={() => {
+                    if (item.id === 'settings') return
+                    setCategory(item.id === 'home' ? 'all' : (item.id as 'passwords' | 'notes' | 'favorites'))
+                  }}
                 >
                   <Icon />
                   {item.label}
@@ -155,13 +159,13 @@ export default function VaultPage() {
           <div className={styles.recentHead}>
             <h2 className={styles.recentTitle}>Recent Items</h2>
             <div className={styles.tabs}>
-              {(['all', 'passwords', 'notes'] as const).map((t) => (
+              {(['all', 'passwords', 'notes', 'favorites'] as const).map((t) => (
                 <button
                   key={t}
-                  className={`${styles.tab} ${filter === t ? styles.tabActive : ''}`}
-                  onClick={() => setFilter(t)}
+                  className={`${styles.tab} ${category === t ? styles.tabActive : ''}`}
+                  onClick={() => setCategory(t)}
                 >
-                  {t === 'all' ? 'All' : t === 'passwords' ? 'Passwords' : 'Notes'}
+                  {t === 'all' ? 'All' : t === 'passwords' ? 'Passwords' : t === 'notes' ? 'Notes' : 'Favorites'}
                 </button>
               ))}
             </div>
@@ -175,7 +179,7 @@ export default function VaultPage() {
             ) : (
               recent.map((item) => (
                 <button
-                  key={`${item.type}-${item.id}-${filter}-${query}`}
+                  key={`${item.type}-${item.id}-${category}-${query}`}
                   className={styles.item}
                   onClick={() => setSelectedKey(`${item.type}-${item.id}`)}
                 >
