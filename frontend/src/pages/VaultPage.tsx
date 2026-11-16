@@ -122,7 +122,7 @@ export default function VaultPage() {
       <header className={styles.header}>
         <div className={styles.search}>
           <SearchIcon />
-          <input placeholder="Search passwords, notes, or categories..." value={query} onChange={(e) => setQuery(e.target.value)} />
+          <input placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} />
         </div>
         <div className={styles.user}>
           <span className={styles.avatar}>{initials}</span>
@@ -279,6 +279,23 @@ export default function VaultPage() {
 
       {showAdd && <AddItemModal onClose={() => setShowAdd(false)} />}
       {editItem && <AddItemModal item={editItem} onClose={() => setEditItem(null)} />}
+  
+      <nav className={styles.bottomNav}>
+        {NAV.filter((item) => item.id !== 'settings').map((item) => {
+          const Icon = item.icon
+          const isActive = item.id === 'home' ? category === 'all' : item.id === category
+          return (
+            <button
+              key={item.id}
+              className={`${styles.bottomNavItem} ${isActive ? styles.bottomNavActive : ''}`}
+              onClick={() => setCategory(item.id === 'home' ? 'all' : (item.id as 'passwords' | 'notes' | 'favorites'))}
+            >
+              <Icon />
+              <span>{item.label}</span>
+            </button>
+          )
+        })}
+      </nav>
     </div>
   )
 }
