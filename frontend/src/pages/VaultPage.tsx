@@ -6,6 +6,8 @@ import { useVaultItems } from '../hooks/useVaultItems'
 import { decryptData } from '../lib/crypto'
 import AddItemModal from '../components/AddItemModal'
 import { useToggleFavorite } from '../hooks/useToggleFavorite'
+import ConfirmDialog from '../components/ConfirmDialog'
+import { useDeleteItem } from '../hooks/useDeleteItem'
 
 const NAV = [
   { id: 'home', label: 'Home', icon: HomeIcon },
@@ -42,7 +44,9 @@ export default function VaultPage() {
   const [decrypted, setDecrypted] = useState<DecryptedFields | null>(null)
   const [showAdd, setShowAdd] = useState(false)
   const toggleFav = useToggleFavorite()
-  
+  const del = useDeleteItem()
+  const [confirmDelete, setConfirmDelete] = useState(false)
+
   useEffect(() => {
     let cancelled = false
     setShowPwd(false)
@@ -237,7 +241,7 @@ export default function VaultPage() {
 
             <div className={styles.detailActions}>
               <button className={styles.editBtn}><EditIcon /> Edit</button>
-              <button className={styles.deleteBtn}><TrashIcon /> Delete</button>
+              <button className={styles.deleteBtn} onClick={() => setConfirmDelete(true)}><TrashIcon /> Delete</button>
             </div>
 
             <div className={styles.detailBanner} aria-hidden="true" />
@@ -245,6 +249,16 @@ export default function VaultPage() {
         )}
       </section>
 
+      {confirmDelete && selected && (
+        <ConfirmDialog
+          title="Delete item"
+          message={`Delete "${selected.title}"? This can't be undone.`}
+          busy={del.isPending}
+          onConfirm={() => del.mutate(selected, { onSuccess: () => { setConfirmDelete(false); setSelectedKey(null) } })}
+          onCancel={() => setConfirmDelete(false)}
+        />
+      )}
+      
       {showAdd && <AddItemModal onClose={() => setShowAdd(false)} />}
     </div>
   )
