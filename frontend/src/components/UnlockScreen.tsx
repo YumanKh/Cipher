@@ -24,7 +24,7 @@ export default function UnlockScreen() {
       const cryptingKey = await unwrapCryptingKey(wrappedKey, masterKey)
       unlock(cryptingKey)
     } catch {
-      setError('Wrong master password.')
+      setError('Wrong password.')
       setBusy(false)
     }
   }
@@ -37,7 +37,7 @@ export default function UnlockScreen() {
         <input
           className={styles.input}
           type="password"
-          placeholder="Master password"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoFocus

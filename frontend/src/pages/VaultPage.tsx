@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import styles from './VaultPage.module.css'
 import logo from '../assets/logo.png'
 import { useAuthStore } from '../stores/authStore'
-import { useVaultItems } from '../hooks/useVaultItems'
+import { useVaultItems, type VaultItem } from '../hooks/useVaultItems'
 import { decryptData } from '../lib/crypto'
 import AddItemModal, { type EditTarget } from '../components/AddItemModal'
 import { useToggleFavorite } from '../hooks/useToggleFavorite'
@@ -49,7 +49,8 @@ export default function VaultPage() {
   const [showAdd, setShowAdd] = useState(false)
   const toggleFav = useToggleFavorite()
   const del = useDeleteItem()
-  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [menuFor, setMenuFor] = useState<string | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<VaultItem | null>(null)
   const [editItem, setEditItem] = useState<EditTarget | null>(null)
 
   useEffect(() => {
@@ -67,6 +68,13 @@ export default function VaultPage() {
     return () => { cancelled = true }
   }, [selected])
 
+  useEffect(() => {
+    if (!selected) return
+    if (!window.matchMedia('(max-width: 900px)').matches) return
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [selected])
+
   const openEdit = () => {
     if (!selected || !decrypted) return
     setEditItem(
@@ -74,6 +82,30 @@ export default function VaultPage() {
         ? { id: selected.id, type: 'Password', title: selected.title, link: selected.link, username: decrypted.username, password: decrypted.password, notes: decrypted.notes }
         : { id: selected.id, type: 'Note', title: selected.title, link: null, content: decrypted.notes },
     )
+  }
+
+  useEffect(() => {
+    if (!menuFor) return
+    const close = () => setMenuFor(null)
+    document.addEventListener('click', close)
+    return () => document.removeEventListener('click', close)
+  }, [menuFor])
+
+  const editFromItem = async (item: VaultItem) => {
+    setMenuFor(null)
+    const stored = useAuthStore.getState().cryptingKey
+    if (!stored) return
+    try {
+      const plaintext = await decryptData(item.content, item.iv, Uint8Array.from(stored))
+      if (item.type === 'Password') {
+        const d = JSON.parse(plaintext)
+        setEditItem({ id: item.id, type: 'Password', title: item.title, link: item.link, username: d.username, password: d.password, notes: d.notes })
+      } else {
+        setEditItem({ id: item.id, type: 'Note', title: item.title, link: null, content: plaintext })
+      }
+    } catch {
+      
+    }
   }
 
   return (
@@ -177,11 +209,15 @@ export default function VaultPage() {
             ) : recent.length === 0 ? (
               <div className={styles.placeholder} style={{ padding: 18 }}>No items yet.</div>
             ) : (
-              recent.map((item) => (
-                <button
-                  key={`${item.type}-${item.id}-${category}-${query}`}
+            recent.map((item) => {
+              const key = `${item.type}-${item.id}`
+              return (
+                <div
+                  key={`${key}-${category}-${query}`}
                   className={styles.item}
-                  onClick={() => setSelectedKey(`${item.type}-${item.id}`)}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setSelectedKey(key)}
                 >
                   <span className={styles.itemIcon}>{item.title[0]}</span>
                   <span className={styles.itemMain}>
@@ -191,19 +227,38 @@ export default function VaultPage() {
                   <span className={`${styles.badge} ${item.type === 'Password' ? styles.badgePwd : styles.badgeNote}`}>
                     {item.type}
                   </span>
-                  <span className={styles.itemMenu}><DotsIcon /></span>
-                </button>
-              ))
+                  <div className={styles.itemMenuWrap}>
+                    <button
+                      className={styles.itemMenu}
+                      onClick={(e) => { e.stopPropagation(); setMenuFor(menuFor === key ? null : key) }}
+                      aria-label="Actions"
+                    >
+                      <DotsIcon />
+                    </button>
+                    {menuFor === key && (
+                      <div className={styles.menu} onClick={(e) => e.stopPropagation()}>
+                        <button className={styles.menuItem} onClick={() => { toggleFav.mutate(item); setMenuFor(null) }}>
+                          {item.isFavorite ? 'Unfavorite' : 'Favorite'}
+                        </button>
+                        <button className={styles.menuItem} onClick={() => editFromItem(item)}>Edit</button>
+                        <button className={`${styles.menuItem} ${styles.menuDanger}`} onClick={() => { setDeleteTarget(item); setMenuFor(null) }}>Delete</button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
+            })
             )}
           </div>
         </section>
       </main>
 
-      <section className={styles.detail}>
+      <section className={`${styles.detail} ${selected ? styles.detailOpen : ''}`}>
         {!selected ? (
           <div className={styles.placeholder} style={{ padding: 24 }}>Select an item to view its details.</div>
         ) : (
           <>
+            <button className={styles.detailBack} onClick={() => setSelectedKey(null)}><BackIcon /> Back</button>
             <div className={styles.detailCard}>
               <div className={styles.detailHead}>
                 <span className={styles.detailIcon}>{selected.title[0]}</span>
@@ -212,8 +267,7 @@ export default function VaultPage() {
                   {selected.link && <div className={styles.detailDomain}>{selected.link}</div>}
                   <span className={`${styles.badge} ${selected.type === 'Password' ? styles.badgePwd : styles.badgeNote}`}>{selected.type}</span>
                 </div>
-                <button className={`${styles.iconBtn} ${selected.isFavorite ? styles.starBtn : ''}`} onClick={() => toggleFav.mutate(selected)} aria-label="Favorite"><StarIcon /></button>
-                <button className={styles.iconBtn} aria-label="More"><DotsIcon /></button>
+                <button className={`${styles.iconBtn} ${styles.favBtn} ${selected.isFavorite ? styles.starBtn : ''}`} onClick={() => toggleFav.mutate(selected)} aria-label="Favorite"><StarIcon /></button>
               </div>
 
               <div className={styles.fields}>
@@ -259,7 +313,7 @@ export default function VaultPage() {
 
             <div className={styles.detailActions}>
               <button className={styles.editBtn} onClick={openEdit}><EditIcon /> Edit</button>
-              <button className={styles.deleteBtn} onClick={() => setConfirmDelete(true)}><TrashIcon /> Delete</button>
+              <button className={styles.deleteBtn} onClick={() => setDeleteTarget(selected)}><TrashIcon /> Delete</button>
             </div>
 
             <div className={styles.detailBanner} aria-hidden="true" />
@@ -267,13 +321,13 @@ export default function VaultPage() {
         )}
       </section>
 
-      {confirmDelete && selected && (
+      {deleteTarget && (
         <ConfirmDialog
           title="Delete item"
-          message={`Delete "${selected.title}"? This can't be undone.`}
+          message={`Delete "${deleteTarget.title}"? This can't be undone.`}
           busy={del.isPending}
-          onConfirm={() => del.mutate(selected, { onSuccess: () => { setConfirmDelete(false); setSelectedKey(null) } })}
-          onCancel={() => setConfirmDelete(false)}
+          onConfirm={() => del.mutate(deleteTarget, { onSuccess: () => { setDeleteTarget(null); if (selectedKey === `${deleteTarget.type}-${deleteTarget.id}`) setSelectedKey(null) } })}
+          onCancel={() => setDeleteTarget(null)}
         />
       )}
 
@@ -358,4 +412,7 @@ function EditIcon() {
 }
 function TrashIcon() {
   return (<svg viewBox="0 0 24 24"><path d="M10 11v6" /><path d="M14 11v6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>)
+}
+function BackIcon() {
+  return (<svg viewBox="0 0 24 24"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>)
 }
