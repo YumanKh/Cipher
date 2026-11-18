@@ -8,6 +8,7 @@ import AuthPage from './pages/AuthPage'
 import VaultPage from './pages/VaultPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import SessionGate from './components/SessionGate'
+import SettingsPage from './pages/SettingsPage'
 
 const queryClient = new QueryClient()
 
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/login" element={<AuthPage />} />
             <Route path="/register" element={<AuthPage />} />
             <Route path="/vault" element={<ProtectedRoute><VaultPage /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
           </Routes>
         </SessionGate>
       </BrowserRouter>

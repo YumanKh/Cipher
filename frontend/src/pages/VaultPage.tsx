@@ -8,13 +8,15 @@ import AddItemModal, { type EditTarget } from '../components/AddItemModal'
 import { useToggleFavorite } from '../hooks/useToggleFavorite'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { useDeleteItem } from '../hooks/useDeleteItem'
+import { useNavigate } from 'react-router-dom'
+import { logout } from '../lib/api'
 
 const NAV = [
   { id: 'home', label: 'Home', icon: HomeIcon },
   { id: 'passwords', label: 'Passwords', icon: PasswordsIcon },
   { id: 'notes', label: 'Notes', icon: NotesIcon },
   { id: 'favorites', label: 'Favorites', icon: StarIcon },
-  { id: 'settings', label: 'Settings', icon: SettingsIcon },
+  { id: 'trash', label: 'Trash', icon: TrashIcon },
 ]
 
 type DecryptedFields = { username?: string; password?: string; notes?: string }
@@ -52,6 +54,17 @@ export default function VaultPage() {
   const [menuFor, setMenuFor] = useState<string | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<VaultItem | null>(null)
   const [editItem, setEditItem] = useState<EditTarget | null>(null)
+  const navigate = useNavigate()
+  const clear = useAuthStore((s) => s.clear)
+  const [userMenu, setUserMenu] = useState(false)
+  const [confirmLogout, setConfirmLogout] = useState(false)
+
+  const handleLogout = async () => {
+    setUserMenu(false)
+    try { await logout() } catch { /* ignore */ }
+    clear()
+    navigate('/login')
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -129,7 +142,7 @@ export default function VaultPage() {
                   key={item.id}
                   className={`${styles.navItem} ${isActive ? styles.navActive : ''}`}
                   onClick={() => {
-                    if (item.id === 'settings') return
+                    if (item.id === 'trash') return
                     setCategory(item.id === 'home' ? 'all' : (item.id as 'passwords' | 'notes' | 'favorites'))
                   }}
                 >
@@ -156,9 +169,21 @@ export default function VaultPage() {
           <SearchIcon />
           <input placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} />
         </div>
-        <div className={styles.user}>
-          <span className={styles.avatar}>{initials}</span>
-          <span className={styles.userName}>{displayName}</span>
+        <div className={styles.userWrap}>
+          <button className={styles.user} onClick={() => setUserMenu((o) => !o)}>
+            <span className={styles.avatar}>{initials}</span>
+            <span className={styles.userName}>{displayName}</span>
+            <ChevronDownIcon />
+          </button>
+          {userMenu && (
+            <>
+              <div className={styles.userBackdrop} onClick={() => setUserMenu(false)} />
+              <div className={styles.userMenu}>
+                <button className={styles.userMenuItem} onClick={() => { setUserMenu(false); navigate('/settings') }}><SettingsIcon /> Settings</button>
+                <button className={`${styles.userMenuItem} ${styles.userMenuDanger}`} onClick={() => { setUserMenu(false); setConfirmLogout(true) }}><LogoutIcon /> Logout</button>
+              </div>
+            </>
+          )}
         </div>
       </header>
 
@@ -331,6 +356,16 @@ export default function VaultPage() {
         />
       )}
 
+      {confirmLogout && (
+        <ConfirmDialog
+          title="Log out?"
+          message="Once you log out, you will need to log in again."
+          confirmLabel="Logout"
+          onConfirm={handleLogout}
+          onCancel={() => setConfirmLogout(false)}
+        />
+      )}
+
       {showAdd && <AddItemModal onClose={() => setShowAdd(false)} />}
       {editItem && <AddItemModal item={editItem} onClose={() => setEditItem(null)} />}
   
@@ -415,4 +450,10 @@ function TrashIcon() {
 }
 function BackIcon() {
   return (<svg viewBox="0 0 24 24"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>)
+}
+function ChevronDownIcon() {
+  return (<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></svg>)
+}
+function LogoutIcon() {
+  return (<svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /></svg>)
 }

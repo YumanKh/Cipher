@@ -132,3 +132,7 @@ export function updateNote(id: number, input: { title: string; content: string; 
 export function updatePassword(id: number, input: { title: string; link?: string; content: string; iv: string }) {
   return authRequest<{ updated: boolean }>(`/passwords/${id}`, { method: 'PATCH', body: input })
 }
+
+export function logout() {
+  return request<{ message: string }>('/auth/logout', {})
+}
