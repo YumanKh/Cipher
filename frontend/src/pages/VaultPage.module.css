@@ -189,11 +189,9 @@
 }
 .item:last-child::after { display: none; }
 .item:hover { background: #f3f6f2; }
-.item:hover { background: #f3f6f2; }
-.item:hover { background: #f3f6f2; }
 .item:first-child { border-radius: 18px 18px 0 0; }
 .item:last-child { border-radius: 0 0 18px 18px; }
-.itemIcon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: #e9efe9; color: var(--ink); font: 600 18px var(--serif); }
+.itemIcon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: #fff; color: var(--ink); font: 600 18px var(--serif); }
 .itemMain { display: flex; flex-direction: column; min-width: 0; }
 .itemName { font-size: 15px; font-weight: 600; color: var(--ink); }
 .itemSub { font-size: 13px; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -227,7 +225,7 @@
 .detailBack { display: none; }
 .detailCard { background: #fcfdfb; border: 1px solid var(--line); border-radius: 20px; padding: 22px; }
 .detailHead { display: grid; grid-template-columns: 56px 1fr auto auto; align-items: start; gap: 14px; margin-bottom: 18px; }
-.detailIcon { width: 56px; height: 56px; border-radius: 15px; display: grid; place-items: center; background: #1f2937; color: #fff; font: 600 22px var(--serif); }
+.detailIcon { width: 56px; height: 56px; border-radius: 15px; display: grid; place-items: center; background: #fff; color: #1f2937; font: 600 22px var(--serif); }
 .detailTitle { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
 .detailName { font: 700 20px var(--serif); color: var(--ink); }
 .detailDomain { font-size: 13px; color: var(--muted); }
@@ -238,6 +236,13 @@
 .favBtn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .starBtn { color: #e6a93b; }
 .starBtn svg { fill: currentColor; }
+
+.itemIcon img, .detailIcon img { box-sizing: border-box; width: 100%; height: 100%; object-fit: contain; border-radius: inherit; background: transparent; }
+.itemIcon img { padding: 7px; }
+.detailIcon img { padding: 9px; }
+.itemIcon svg, .detailIcon svg { stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.itemIcon svg { width: 22px; height: 22px; }
+.detailIcon svg { width: 26px; height: 26px; }
 
 .fields { display: flex; flex-direction: column; }
 .field { padding: 13px 0; border-top: 1px solid var(--line); }

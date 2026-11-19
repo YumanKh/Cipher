@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import styles from './VaultPage.module.css'
 import logo from '../assets/logo.png'
 import { useAuthStore } from '../stores/authStore'
@@ -10,6 +10,7 @@ import ConfirmDialog from '../components/ConfirmDialog'
 import { useDeleteItem } from '../hooks/useDeleteItem'
 import { useNavigate } from 'react-router-dom'
 import { logout } from '../lib/api'
+import { faviconUrl } from '../lib/favicon'
 
 const NAV = [
   { id: 'home', label: 'Home', icon: HomeIcon },
@@ -117,7 +118,7 @@ export default function VaultPage() {
         setEditItem({ id: item.id, type: 'Note', title: item.title, link: null, content: plaintext })
       }
     } catch {
-      
+
     }
   }
 
@@ -244,7 +245,7 @@ export default function VaultPage() {
                   tabIndex={0}
                   onClick={() => setSelectedKey(key)}
                 >
-                  <span className={styles.itemIcon}>{item.title[0]}</span>
+                  <span className={styles.itemIcon}><Favicon link={item.link} fallback={item.type === 'Note' ? <NotesIcon /> : <PasswordsIcon />} /></span>
                   <span className={styles.itemMain}>
                     <span className={styles.itemName}>{item.title}</span>
                     {item.link && <span className={styles.itemSub}>{item.link}</span>}
@@ -286,7 +287,7 @@ export default function VaultPage() {
             <button className={styles.detailBack} onClick={() => setSelectedKey(null)}><BackIcon /> Back</button>
             <div className={styles.detailCard}>
               <div className={styles.detailHead}>
-                <span className={styles.detailIcon}>{selected.title[0]}</span>
+                <span className={styles.detailIcon}><Favicon key={selected.id} link={selected.link} fallback={selected.type === 'Note' ? <NotesIcon /> : <PasswordsIcon />} /></span>
                 <div className={styles.detailTitle}>
                   <div className={styles.detailName}>{selected.title}</div>
                   {selected.link && <div className={styles.detailDomain}>{selected.link}</div>}
@@ -368,7 +369,7 @@ export default function VaultPage() {
 
       {showAdd && <AddItemModal onClose={() => setShowAdd(false)} />}
       {editItem && <AddItemModal item={editItem} onClose={() => setEditItem(null)} />}
-  
+
       <nav className={styles.bottomNav}>
         {NAV.filter((item) => item.id !== 'settings').map((item) => {
           const Icon = item.icon
@@ -456,4 +457,10 @@ function ChevronDownIcon() {
 }
 function LogoutIcon() {
   return (<svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /></svg>)
+}
+function Favicon({ link, fallback }: { link?: string | null; fallback: ReactNode }) {
+  const src = faviconUrl(link)
+  const [failed, setFailed] = useState(false)
+  if (!src || failed) return <>{fallback}</>
+  return <img src={src} alt="" onError={() => setFailed(true)} />
 }
