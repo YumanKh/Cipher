@@ -1,0 +1,56 @@
+.page { min-height: 100vh; background: var(--paper); padding: 24px 16px 60px; }
+.layout { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 22px; align-items: start; }
+.content { display: flex; flex-direction: column; gap: 18px; }
+.side { position: sticky; top: 24px; }
+
+.back { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; color: var(--ink); font-size: 15px; font-weight: 600; cursor: pointer; padding: 6px 4px; }
+.back svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.hero { position: relative; overflow: hidden; border-radius: 20px; padding: 32px 30px; min-height: 150px; display: flex; flex-direction: column; justify-content: center; background: url('../assets/welcome-banner.png') no-repeat right center / cover, #e9f0ea; }
+.hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(247, 250, 246, .88), rgba(247, 250, 246, .35) 70%, transparent); }
+.hero h1 { position: relative; margin: 0 0 6px; font: 700 32px var(--serif); color: var(--ink); }
+.hero p { position: relative; margin: 0; font-size: 15px; color: var(--muted); }
+
+.panel { background: #fcfdfb; border: 1px solid var(--line); border-radius: 18px; padding: 4px 18px; }
+.panelHead { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.headIcon { width: 46px; height: 46px; flex: none; border-radius: 12px; background: #dceee7; color: #178a5f; display: grid; place-items: center; }
+.headIcon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.headIcon.danger { background: #fdf1f0; color: #c4453d; }
+.panelHead h2 { font: 700 18px var(--serif); color: var(--ink); margin: 0 0 2px; }
+.panelHead p { margin: 0; color: var(--muted); font-size: 13px; }
+
+.row { display: flex; align-items: center; gap: 16px; padding: 16px 0; }
+.row + .row { border-top: 1px solid var(--line); }
+.rowCopy { flex: 1; min-width: 0; }
+.rowCopy strong { display: block; font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+.rowCopy small { color: var(--muted); font-size: 13px; word-break: break-word; }
+.rowBtn { flex: none; border: 1px solid var(--line); background: #fcfdfb; color: var(--ink); height: 40px; padding: 0 18px; border-radius: 11px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.rowBtn:hover { background: #f1f5f1; }
+.dangerBtn { border-color: #f3d4d1; background: #fdf1f0; color: #c4453d; }
+.dangerBtn:hover { background: #fbe6e4; }
+
+.brandCard { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); }
+.brandBg { display: block; width: 100%; height: auto; }
+.brandOverlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; padding: 34px 22px 74px; }
+.brandTop { display: flex; flex-direction: column; align-items: center; }
+.brandBottom { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.brandShield { position: relative; width: 108px; height: auto; margin-bottom: 8px; filter: drop-shadow(0 8px 14px rgba(12,73,71,.25)); }
+.brandTitle { position: relative; margin: 6px 0 2px; font: 700 28px var(--serif); color: #fff; }
+.brandTagline { position: relative; margin: 0; font-size: 15px; color: rgba(255,255,255,.92); }
+.brandVersion { position: relative; margin-top: 26px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,.55); width: 82%; font-size: 13px; color: var(--muted); }
+.brandDot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3fbf7f; margin: 0 4px 1px; vertical-align: middle; }
+.brandLinks { position: relative; width: 100%; margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
+.brandLink { display: flex; align-items: center; gap: 12px; height: 54px; padding: 0 16px; border: 1px solid var(--line); background: rgba(255,255,255,.75); border-radius: 13px; color: var(--ink); font-size: 15px; font-weight: 600; cursor: pointer; }
+.brandLink:hover { background: #fff; }
+.brandLink svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.brandArrow { margin-left: auto; color: var(--muted); font-size: 22px; }
+
+@media (max-width: 1024px) {
+  .layout { grid-template-columns: 1fr; }
+  .side { position: static; }
+}
+@media (max-width: 640px) {
+  .page { padding: 16px 12px 48px; }
+  .hero { padding: 24px 20px; }
+  .hero h1 { font-size: 27px; }
+}
