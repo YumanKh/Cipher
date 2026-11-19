@@ -59,7 +59,7 @@ export const updatePassword = async (req: Request, res: Response) => {
     }
 
     try {
-        const results = await updatePasswordContent(userId, passwordId.data.id, updateData.data.iv, updateData.data?.isFavorite, updateData.data?.title, updateData.data?.content, updateData.data?.link);
+        const results = await updatePasswordContent(userId, passwordId.data.id, updateData.data.iv, updateData.data?.isFavorite, updateData.data?.isTrash, updateData.data?.title, updateData.data?.content, updateData.data?.link);
         if (!results) {
             res.status(404).json({ error: "Password not found" });
             return;

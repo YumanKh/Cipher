@@ -25,7 +25,7 @@ export const createPassword = async (userId: number, title: string, iv: string, 
     });
 };
 
-export const modifyPasswordContent = async (userId: number, passwordId: number, iv?: string, isFavorite?: boolean, title?: string, content?: string, link?: string) => {
+export const modifyPasswordContent = async (userId: number, passwordId: number, iv?: string, isFavorite?: boolean, isTrash?: boolean, title?: string, content?: string, link?: string) => {
   return prisma.passwords.updateMany({
     where: { 
       id: passwordId,
@@ -33,6 +33,7 @@ export const modifyPasswordContent = async (userId: number, passwordId: number, 
     },
     data: { 
       isFavorite: isFavorite,
+      isTrash: isTrash,
       title: title,
       link: link,
       content: content,

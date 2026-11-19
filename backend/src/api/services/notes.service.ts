@@ -8,8 +8,8 @@ export const createNoteForUser = async (userId: number, title: string, content: 
   return createNote(userId, title, content, iv);
 };
 
-export const updateNoteContent = async (userId: number, noteId: number, iv?: string, isFavorite?: boolean, title?: string, content?: string) => {
-  const results = await modifyNoteContent(userId, noteId, iv, isFavorite, title, content);
+export const updateNoteContent = async (userId: number, noteId: number, iv?: string, isFavorite?: boolean, isTrash?: boolean, title?: string, content?: string) => {
+  const results = await modifyNoteContent(userId, noteId, iv, isFavorite, isTrash, title, content);
   
   if (results.count === 0) return null;
   return results;

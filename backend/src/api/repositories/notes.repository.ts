@@ -17,7 +17,7 @@ export const createNote = async (userId: number, title: string, content: string,
   });
 };
 
-export const modifyNoteContent = async (userId: number, noteId: number, iv?: string, isFavorite?: boolean, title?: string, content?: string) => {
+export const modifyNoteContent = async (userId: number, noteId: number, iv?: string, isFavorite?: boolean, isTrash?: boolean, title?: string, content?: string) => {
   return prisma.note.updateMany({
     where: { 
       id: noteId,
@@ -25,6 +25,7 @@ export const modifyNoteContent = async (userId: number, noteId: number, iv?: str
     },
     data: { 
       isFavorite: isFavorite,
+      isTrash: isTrash,
       title: title,
       content: content,
       iv: iv

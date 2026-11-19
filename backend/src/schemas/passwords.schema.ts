@@ -9,6 +9,7 @@ export const createPasswordSchema = z.object({
 
 export const modifyPasswordSchema = z.object({
     isFavorite: z.boolean().optional(),
+    isTrash: z.boolean().optional(),
     title: z.string().min(1, "Title is required").optional(),
     link: z.string().optional(),
     content: z.string().min(1, "Content is required").optional(),

@@ -8,6 +8,7 @@ export const createNoteSchema = z.object({
 
 export const modifyNoteSchema = z.object({
     isFavorite: z.boolean().optional(),
+    isTrash: z.boolean().optional(),
     title: z.string().min(1, "Title is required").optional(),
     content: z.string().min(1, "Content is required").optional(),
     iv: z.string().min(1, "IV is required").optional(),

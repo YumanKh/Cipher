@@ -8,8 +8,8 @@ export const createPasswordForUser = async (userId: number, title: string, iv: s
   return createPassword(userId, title, iv, content, link);
 };
 
-export const updatePasswordContent = async (userId: number, passwordId: number, iv?: string, isFavorite?: boolean, title?: string, content?: string, link?: string) => {
-  const results = await modifyPasswordContent(userId, passwordId, iv, isFavorite, title, content, link);
+export const updatePasswordContent = async (userId: number, passwordId: number, iv?: string, isFavorite?: boolean, isTrash?: boolean, title?: string, content?: string, link?: string) => {
+  const results = await modifyPasswordContent(userId, passwordId, iv, isFavorite, isTrash, title, content, link);
   
   if (results.count === 0) return null;
   return results;

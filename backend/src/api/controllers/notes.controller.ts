@@ -59,7 +59,7 @@ export const updateNote = async (req: Request, res: Response) => {
     }
 
     try {
-        const results = await updateNoteContent(userId, noteId.data.id, updateData.data.iv, updateData.data?.isFavorite, updateData.data?.title, updateData.data?.content);
+        const results = await updateNoteContent(userId, noteId.data.id, updateData.data.iv, updateData.data?.isFavorite, updateData.data?.isTrash, updateData.data?.title, updateData.data?.content);
         if (!results) {
             res.status(404).json({ error: "Note not found" });
             return;
