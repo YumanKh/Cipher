@@ -1,13 +1,28 @@
-.page { min-height: 100vh; background: var(--paper); padding: 24px 16px 60px; }
-.layout { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 22px; align-items: start; }
-.content { display: flex; flex-direction: column; gap: 18px; }
-.side { position: sticky; top: 24px; }
+.page { min-height: 100vh; background-color: var(--paper); background-image: url('../assets/footer-leaves.png'); background-repeat: no-repeat; background-position: center bottom; background-size: cover; padding: 24px 16px 0; }
+.inner { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
 
-.back { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; color: var(--ink); font-size: 15px; font-weight: 600; cursor: pointer; padding: 6px 4px; }
-.back svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.back {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 1px solid var(--line); background: #fff;
+  color: var(--ink); font-size: 14px; font-weight: 600;
+  cursor: pointer; padding: 8px 15px 8px 11px; border-radius: 999px;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.back:hover { background: var(--paper); border-color: #cfdacf; box-shadow: 0 2px 8px rgba(0, 0, 0, .05); }
+.back svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .15s ease; }
+.back:hover svg { transform: translateX(-3px); }
 
-.hero { position: relative; overflow: hidden; border-radius: 20px; padding: 32px 30px; min-height: 150px; display: flex; flex-direction: column; justify-content: center; background: url('../assets/welcome-banner.png') no-repeat right center / cover, #e9f0ea; }
-.hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(247, 250, 246, .88), rgba(247, 250, 246, .35) 70%, transparent); }
+.hero {
+  position: relative; overflow: hidden;
+  border-radius: 20px; padding: 30px 34px; min-height: 150px;
+  display: flex; flex-direction: column; justify-content: center;
+  background: url('../assets/welcome-banner.png') no-repeat right center / cover, #e9f0ea;
+}
+.hero::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, #e9f0ea 0%, rgba(233, 240, 234, .92) 34%, rgba(233, 240, 234, .3) 66%, transparent 100%);
+}
 .hero h1 { position: relative; margin: 0 0 6px; font: 700 32px var(--serif); color: var(--ink); }
 .hero p { position: relative; margin: 0; font-size: 15px; color: var(--muted); }
 
@@ -29,26 +44,27 @@
 .dangerBtn { border-color: #f3d4d1; background: #fdf1f0; color: #c4453d; }
 .dangerBtn:hover { background: #fbe6e4; }
 
-.brandCard { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); }
-.brandBg { display: block; width: 100%; height: auto; }
-.brandOverlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; padding: 34px 22px 74px; }
-.brandTop { display: flex; flex-direction: column; align-items: center; }
-.brandBottom { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 20px; }
-.brandShield { position: relative; width: 108px; height: auto; margin-bottom: 8px; filter: drop-shadow(0 8px 14px rgba(12,73,71,.25)); }
-.brandTitle { position: relative; margin: 6px 0 2px; font: 700 28px var(--serif); color: #fff; }
-.brandTagline { position: relative; margin: 0; font-size: 15px; color: rgba(255,255,255,.92); }
-.brandVersion { position: relative; margin-top: 26px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,.55); width: 82%; font-size: 13px; color: var(--muted); }
-.brandDot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3fbf7f; margin: 0 4px 1px; vertical-align: middle; }
-.brandLinks { position: relative; width: 100%; margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
-.brandLink { display: flex; align-items: center; gap: 12px; height: 54px; padding: 0 16px; border: 1px solid var(--line); background: rgba(255,255,255,.75); border-radius: 13px; color: var(--ink); font-size: 15px; font-weight: 600; cursor: pointer; }
-.brandLink:hover { background: #fff; }
-.brandLink svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.brandArrow { margin-left: auto; color: var(--muted); font-size: 22px; }
+.fields { display: flex; flex-direction: column; gap: 14px; }
+.label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.warn { font-size: 14px; color: var(--muted); margin: 0 0 16px; line-height: 1.5; }
+.delete { height: 40px; padding: 0 18px; border-radius: 11px; font-size: 14px; font-weight: 600; cursor: pointer; border: 0; background: #c4453d; color: #fff; }
+.delete:disabled { opacity: .6; cursor: default; }
 
-@media (max-width: 1024px) {
-  .layout { grid-template-columns: 1fr; }
-  .side { position: static; }
-}
+/* ---------- FOOTER ---------- */
+.footer { position: relative; z-index: 1; padding: 120px clamp(28px, 5.2vw, 80px) 1px; color: #f4faf6; }
+.footerInner { max-width: 1280px; margin: 0 auto; }
+.footerTop { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.footerBrand { display: flex; align-items: center; gap: 12px; }
+.footerLogo { width: 34px; height: 34px; object-fit: contain; }
+.footerBrandText { display: flex; flex-direction: column; }
+.footerName { font: 600 23px/1.1 var(--serif); color: #fff; }
+.footerTag { font-size: 13px; color: rgba(238, 247, 243, .72); margin-top: 3px; }
+.footerLinks { display: flex; gap: 40px; font-size: 14px; color: #eef7f3; }
+.footerLinks a { opacity: .95; }
+.footerLinks a:hover { text-decoration: underline; }
+.footerDivider { border: 0; border-top: 2px solid rgba(255, 255, 255, .22); margin: 4px 0 16px; }
+.footerCopy { text-align: center; font-size: 13px; color: rgba(238, 247, 243, .65); }
+
 @media (max-width: 640px) {
   .page { padding: 16px 12px 48px; }
   .hero { padding: 24px 20px; }

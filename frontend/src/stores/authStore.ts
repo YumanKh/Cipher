@@ -15,6 +15,7 @@ type AuthState = {
   clear: () => void
   restore: (data: { accessToken: string; user: User; wrappedKey: string; kdfSalt: string }) => void
   unlock: (cryptingKey: Uint8Array) => void
+  patchUser: (patch: Partial<User>) => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -29,4 +30,5 @@ export const useAuthStore = create<AuthState>((set) => ({
   clear: () => set({ status: 'guest', accessToken: null, cryptingKey: null, wrappedKey: null, kdfSalt: null, user: null }),
   restore: (data) => set({ accessToken: data.accessToken, user: data.user, wrappedKey: data.wrappedKey, kdfSalt: data.kdfSalt, status: 'authed' }),
   unlock: (cryptingKey) => set({ cryptingKey }),
+  patchUser: (patch) => set((s) => ({ user: s.user ? { ...s.user, ...patch } : s.user })),
 }))

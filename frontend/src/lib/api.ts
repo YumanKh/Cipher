@@ -136,3 +136,15 @@ export function updatePassword(id: number, input: { title: string; link?: string
 export function logout() {
   return request<{ message: string }>('/auth/logout', {})
 }
+
+export function updateProfile(input: { name?: string; email?: string }) {
+  return authRequest<{ updated: boolean }>('/users/me/datas', { method: 'PATCH', body: input })
+}
+
+export function changeMasterPassword(input: { currentAuthValue: string; newAuthValue: string; cryptingKey: string }) {
+  return authRequest<{ updated: boolean }>('/users/me/password', { method: 'PATCH', body: input })
+}
+
+export function deleteAccount(authValue: string) {
+  return authRequest<{ deleted: boolean }>('/users/me', { method: 'DELETE', body: { authValue } })
+}

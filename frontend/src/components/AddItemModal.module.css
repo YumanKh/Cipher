@@ -27,6 +27,7 @@
 .error { color: #c4453d; font-size: 13px; margin: 0; }
 .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
 .cancel { border: 1px solid var(--line); background: #fcfdfb; color: var(--ink); height: 44px; padding: 0 18px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.cancel:hover { background: #f1f5f1; }
 .save { border: 0; background: #16514c; color: #fff; height: 44px; padding: 0 22px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
 .save:disabled { opacity: .6; cursor: default; }
 .inputWrap { position: relative; }
