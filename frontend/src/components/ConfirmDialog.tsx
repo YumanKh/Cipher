@@ -4,12 +4,14 @@ type Props = {
   title: string
   message: string
   confirmLabel?: string
+  busyLabel?: string
+  tone?: 'danger' | 'neutral'
   busy?: boolean
   onConfirm: () => void
   onCancel: () => void
 }
 
-export default function ConfirmDialog({ title, message, confirmLabel = 'Delete', busy, onConfirm, onCancel }: Props) {
+export default function ConfirmDialog({ title, message, confirmLabel = 'Delete', busyLabel = 'Working…', tone = 'danger', busy, onConfirm, onCancel }: Props) {
   return (
     <div className={styles.overlay} onClick={onCancel}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -17,7 +19,7 @@ export default function ConfirmDialog({ title, message, confirmLabel = 'Delete',
         <p className={styles.message}>{message}</p>
         <div className={styles.actions}>
           <button className={styles.cancel} onClick={onCancel}>Cancel</button>
-          <button className={styles.confirm} onClick={onConfirm} disabled={busy}>{busy ? 'Deleting…' : confirmLabel}</button>
+          <button className={`${styles.confirm} ${tone === 'neutral' ? styles.confirmNeutral : ''}`} onClick={onConfirm} disabled={busy}>{busy ? busyLabel : confirmLabel}</button>
         </div>
       </div>
     </div>

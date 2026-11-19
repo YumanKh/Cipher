@@ -8,6 +8,7 @@ import AddItemModal, { type EditTarget } from '../components/AddItemModal'
 import { useToggleFavorite } from '../hooks/useToggleFavorite'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { useDeleteItem } from '../hooks/useDeleteItem'
+import { useTrashItem } from '../hooks/useTrashItem'
 import { useNavigate } from 'react-router-dom'
 import { logout } from '../lib/api'
 import { faviconUrl } from '../lib/favicon'
@@ -27,20 +28,23 @@ export default function VaultPage() {
   const displayName = currentUser?.name || currentUser?.email || 'User'
   const initials = getInitials(displayName)
   const firstName = displayName.split(/[\s@]/)[0]
-  const [category, setCategory] = useState<'all' | 'passwords' | 'notes' | 'favorites'>('all')
+  const [category, setCategory] = useState<'all' | 'passwords' | 'notes' | 'favorites' | 'trash'>('all')
 
   const { items, isLoading } = useVaultItems()
-  const passwordsCount = items.filter((i) => i.type === 'Password').length
-  const notesCount = items.filter((i) => i.type === 'Note').length
-  const favoritesCount = items.filter((i) => i.isFavorite).length
+  const passwordsCount = items.filter((i) => i.type === 'Password' && !i.isTrash).length
+  const notesCount = items.filter((i) => i.type === 'Note' && !i.isTrash).length
+  const favoritesCount = items.filter((i) => i.isFavorite && !i.isTrash).length
   const [query, setQuery] = useState('')
+
   const recent = items.filter((i) => {
+    const matchesQuery = i.title.toLowerCase().includes(query.toLowerCase())
+    if (category === 'trash') return i.isTrash && matchesQuery
+    if (i.isTrash) return false
     const matchesCategory =
       category === 'all' ||
       (category === 'passwords' && i.type === 'Password') ||
       (category === 'notes' && i.type === 'Note') ||
       (category === 'favorites' && i.isFavorite)
-    const matchesQuery = i.title.toLowerCase().includes(query.toLowerCase())
     return matchesCategory && matchesQuery
   })
 
@@ -52,8 +56,9 @@ export default function VaultPage() {
   const [showAdd, setShowAdd] = useState(false)
   const toggleFav = useToggleFavorite()
   const del = useDeleteItem()
+  const trash = useTrashItem()
   const [menuFor, setMenuFor] = useState<string | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<VaultItem | null>(null)
+  const [confirmAction, setConfirmAction] = useState<{ item: VaultItem; action: 'trash' | 'restore' | 'delete' } | null>(null)
   const [editItem, setEditItem] = useState<EditTarget | null>(null)
   const navigate = useNavigate()
   const clear = useAuthStore((s) => s.clear)
@@ -143,8 +148,7 @@ export default function VaultPage() {
                   key={item.id}
                   className={`${styles.navItem} ${isActive ? styles.navActive : ''}`}
                   onClick={() => {
-                    if (item.id === 'trash') return
-                    setCategory(item.id === 'home' ? 'all' : (item.id as 'passwords' | 'notes' | 'favorites'))
+                    setCategory(item.id === 'home' ? 'all' : (item.id as 'passwords' | 'notes' | 'favorites' | 'trash'))
                   }}
                 >
                   <Icon />
@@ -215,7 +219,7 @@ export default function VaultPage() {
 
         <section className={styles.recent}>
           <div className={styles.recentHead}>
-            <h2 className={styles.recentTitle}>Recent Items</h2>
+            <h2 className={styles.recentTitle}>{category === 'trash' ? 'Trash' : 'Recent Items'}</h2>
             <div className={styles.tabs}>
               {(['all', 'passwords', 'notes', 'favorites'] as const).map((t) => (
                 <button
@@ -233,7 +237,7 @@ export default function VaultPage() {
             {isLoading ? (
               <div className={styles.placeholder} style={{ padding: 18 }}>Loading…</div>
             ) : recent.length === 0 ? (
-              <div className={styles.placeholder} style={{ padding: 18 }}>No items yet.</div>
+              <div className={styles.placeholder} style={{ padding: 18 }}>{category === 'trash' ? 'Trash is empty.' : 'No items yet.'}</div>
             ) : (
             recent.map((item) => {
               const key = `${item.type}-${item.id}`
@@ -263,11 +267,20 @@ export default function VaultPage() {
                     </button>
                     {menuFor === key && (
                       <div className={styles.menu} onClick={(e) => e.stopPropagation()}>
-                        <button className={styles.menuItem} onClick={() => { toggleFav.mutate(item); setMenuFor(null) }}>
-                          {item.isFavorite ? 'Unfavorite' : 'Favorite'}
-                        </button>
-                        <button className={styles.menuItem} onClick={() => editFromItem(item)}>Edit</button>
-                        <button className={`${styles.menuItem} ${styles.menuDanger}`} onClick={() => { setDeleteTarget(item); setMenuFor(null) }}>Delete</button>
+                        {item.isTrash ? (
+                          <>
+                            <button className={styles.menuItem} onClick={() => { setConfirmAction({ item, action: 'restore' }); setMenuFor(null) }}>Restore</button>
+                            <button className={`${styles.menuItem} ${styles.menuDanger}`} onClick={() => { setConfirmAction({ item, action: 'delete' }); setMenuFor(null) }}>Delete</button>
+                          </>
+                        ) : (
+                          <>
+                            <button className={styles.menuItem} onClick={() => { toggleFav.mutate(item); setMenuFor(null) }}>
+                              {item.isFavorite ? 'Unfavorite' : 'Favorite'}
+                            </button>
+                            <button className={styles.menuItem} onClick={() => editFromItem(item)}>Edit</button>
+                            <button className={`${styles.menuItem} ${styles.menuDanger}`} onClick={() => { setConfirmAction({ item, action: 'trash' }); setMenuFor(null) }}>Trash</button>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>
@@ -338,8 +351,17 @@ export default function VaultPage() {
             </div>
 
             <div className={styles.detailActions}>
-              <button className={styles.editBtn} onClick={openEdit}><EditIcon /> Edit</button>
-              <button className={styles.deleteBtn} onClick={() => setDeleteTarget(selected)}><TrashIcon /> Delete</button>
+              {selected.isTrash ? (
+                <>
+                  <button className={styles.editBtn} onClick={() => setConfirmAction({ item: selected, action: 'restore' })}><RestoreIcon /> Restore</button>
+                  <button className={styles.deleteBtn} onClick={() => setConfirmAction({ item: selected, action: 'delete' })}><TrashIcon /> Delete</button>
+                </>
+              ) : (
+                <>
+                  <button className={styles.editBtn} onClick={openEdit}><EditIcon /> Edit</button>
+                  <button className={styles.deleteBtn} onClick={() => setConfirmAction({ item: selected, action: 'trash' })}><TrashIcon /> Trash</button>
+                </>
+              )}
             </div>
 
             <div className={styles.detailBanner} aria-hidden="true" />
@@ -347,13 +369,29 @@ export default function VaultPage() {
         )}
       </section>
 
-      {deleteTarget && (
+      {confirmAction && (
         <ConfirmDialog
-          title="Delete item"
-          message={`Delete "${deleteTarget.title}"? This can't be undone.`}
-          busy={del.isPending}
-          onConfirm={() => del.mutate(deleteTarget, { onSuccess: () => { setDeleteTarget(null); if (selectedKey === `${deleteTarget.type}-${deleteTarget.id}`) setSelectedKey(null) } })}
-          onCancel={() => setDeleteTarget(null)}
+          title={confirmAction.action === 'trash' ? 'Move to Trash' : confirmAction.action === 'restore' ? 'Restore item' : 'Delete'}
+          message={
+            confirmAction.action === 'trash'
+              ? `Move "${confirmAction.item.title}" to Trash? You can restore it later.`
+              : confirmAction.action === 'restore'
+                ? `Restore "${confirmAction.item.title}" to your vault?`
+                : `Permanently delete "${confirmAction.item.title}"? This can't be undone.`
+          }
+          confirmLabel={confirmAction.action === 'trash' ? 'Move to Trash' : confirmAction.action === 'restore' ? 'Restore' : 'Delete'}
+          busyLabel={confirmAction.action === 'trash' ? 'Moving…' : confirmAction.action === 'restore' ? 'Restoring…' : 'Deleting…'}
+          tone={confirmAction.action === 'delete' ? 'danger' : 'neutral'}
+          busy={del.isPending || trash.isPending}
+          onConfirm={() => {
+            const { item, action } = confirmAction
+            if (action === 'delete') {
+              del.mutate(item, { onSuccess: () => { setConfirmAction(null); if (selectedKey === `${item.type}-${item.id}`) setSelectedKey(null) } })
+            } else {
+              trash.mutate({ item, isTrash: action === 'trash' }, { onSuccess: () => { setConfirmAction(null); if (action === 'trash' && selectedKey === `${item.type}-${item.id}`) setSelectedKey(null) } })
+            }
+          }}
+          onCancel={() => setConfirmAction(null)}
         />
       )}
 
@@ -378,7 +416,7 @@ export default function VaultPage() {
             <button
               key={item.id}
               className={`${styles.bottomNavItem} ${isActive ? styles.bottomNavActive : ''}`}
-              onClick={() => setCategory(item.id === 'home' ? 'all' : (item.id as 'passwords' | 'notes' | 'favorites'))}
+              onClick={() => setCategory(item.id === 'home' ? 'all' : (item.id as 'passwords' | 'notes' | 'favorites' | 'trash'))}
             >
               <Icon />
               <span>{item.label}</span>
@@ -448,6 +486,9 @@ function EditIcon() {
 }
 function TrashIcon() {
   return (<svg viewBox="0 0 24 24"><path d="M10 11v6" /><path d="M14 11v6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>)
+}
+function RestoreIcon() {
+  return (<svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5 5.5 5.5 0 0 1-5.5 5.5H11" /></svg>)
 }
 function BackIcon() {
   return (<svg viewBox="0 0 24 24"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>)

@@ -7,6 +7,7 @@ export type VaultItem = {
   type: 'Password' | 'Note'
   title: string
   isFavorite: boolean
+  isTrash: boolean
   content: string
   iv: string
   link: string | null
@@ -18,10 +19,10 @@ export function useVaultItems() {
 
   const items = useMemo<VaultItem[]>(() => [
     ...(passwordsQuery.data?.passwords ?? []).map((p) => ({
-      id: p.id, type: 'Password' as const, title: p.title, isFavorite: p.isFavorite, content: p.content, iv: p.iv, link: p.link,
+      id: p.id, type: 'Password' as const, title: p.title, isFavorite: p.isFavorite, isTrash: p.isTrash, content: p.content, iv: p.iv, link: p.link,
     })),
     ...(notesQuery.data?.notes ?? []).map((n) => ({
-      id: n.id, type: 'Note' as const, title: n.title, isFavorite: n.isFavorite, content: n.content, iv: n.iv, link: null,
+      id: n.id, type: 'Note' as const, title: n.title, isFavorite: n.isFavorite, isTrash: n.isTrash, content: n.content, iv: n.iv, link: null,
     })),
   ], [passwordsQuery.data, notesQuery.data])
 

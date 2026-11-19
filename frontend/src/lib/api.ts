@@ -90,8 +90,8 @@ export function refresh() {
   return request<{ accessToken: string; user: { email: string; name?: string; cryptingKey: string; kdfSalt: string } }>('/auth/refresh', {})
 }
 
-export type NoteRow = { id: number; title: string; content: string; iv: string; isFavorite: boolean }
-export type PasswordRow = { id: number; title: string; link: string | null; content: string; iv: string; isFavorite: boolean }
+export type NoteRow = { id: number; title: string; content: string; iv: string; isFavorite: boolean; isTrash: boolean }
+export type PasswordRow = { id: number; title: string; link: string | null; content: string; iv: string; isFavorite: boolean; isTrash: boolean }
 
 export function getNotes() {
   return authRequest<{ notes: NoteRow[] }>('/notes')
@@ -147,4 +147,13 @@ export function changeMasterPassword(input: { currentAuthValue: string; newAuthV
 
 export function deleteAccount(authValue: string) {
   return authRequest<{ deleted: boolean }>('/users/me', { method: 'DELETE', body: { authValue } })
+}
+
+export function setNoteTrash(id: number, isTrash: boolean) {
+  const body = isTrash ? { isTrash: true, isFavorite: false } : { isTrash: false }
+  return authRequest<{ updated: boolean }>(`/notes/${id}`, { method: 'PATCH', body })
+}
+export function setPasswordTrash(id: number, isTrash: boolean) {
+  const body = isTrash ? { isTrash: true, isFavorite: false } : { isTrash: false }
+  return authRequest<{ updated: boolean }>(`/passwords/${id}`, { method: 'PATCH', body })
 }
