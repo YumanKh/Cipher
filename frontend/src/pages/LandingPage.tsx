@@ -27,9 +27,9 @@ export default function LandingPage() {
           </a>
 
           <nav className={styles.navlinks} aria-label="Main navigation">
-            <a href="#features">Features</a>
-            <a href="#security">Security</a>
-            <a href="#how">How it works</a>
+            <a href="/features">Features</a>
+            <a href="/security">Security</a>
+            <a href="/terms">Terms</a>
           </nav>
 
           <div className={styles.navActions}>
@@ -149,9 +149,9 @@ export default function LandingPage() {
           <span className={styles.brandName}>Cipher</span>
           <button className={styles.drawerClose} aria-label="Close menu" onClick={closeMenu}>×</button>
         </div>
-        <a href="#features" onClick={closeMenu}>Features</a>
-        <a href="#security" onClick={closeMenu}>Security</a>
-        <a href="#how" onClick={closeMenu}>How it works</a>
+        <a href="/features" onClick={closeMenu}>Features</a>
+        <a href="/security" onClick={closeMenu}>Security</a>
+        <Link to="/terms" onClick={closeMenu}>Terms</Link>
         <Link to="/login" className={styles.drawerLogin} onClick={closeMenu}>Log in</Link>
         <Link to="/register" className={styles.drawerCta} onClick={closeMenu}>Register</Link>
       </nav>

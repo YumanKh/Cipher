@@ -11,6 +11,7 @@ import SessionGate from './components/SessionGate'
 import SettingsPage from './pages/SettingsPage'
 import ErrorPage from './pages/ErrorPage'
 import ErrorBoundary from './components/ErrorBoundary'
+import FeaturesPage from './pages/FeaturesPage'
 
 const queryClient = new QueryClient()
 
@@ -26,6 +27,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/register" element={<AuthPage />} />
               <Route path="/vault" element={<ProtectedRoute><VaultPage /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+              <Route path="/features" element={<FeaturesPage />} />
               <Route path="*" element={<ErrorPage />} />
             </Routes>
           </SessionGate>
