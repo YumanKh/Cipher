@@ -3,7 +3,7 @@
   background-image: url('../assets/footer-leaves.png');
   background-repeat: no-repeat;
   background-position: center bottom;
-  background-size: cover;
+  background-size: 100% auto;
 }
 
 .topbar {
@@ -60,7 +60,7 @@
   padding: 120px clamp(28px, 5.2vw, 80px) 1px;
   color: #f4faf6;
 }
-.footerInner { max-width: 1280px; margin: 0 auto; }
+.footerInner { max-width: 1280px; margin: 0 auto; transform: translateY(10px); }
 .footerTop { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .footerBrand { display: flex; align-items: center; gap: 12px; }
 .footerLogo { width: 34px; height: 34px; object-fit: contain; }
@@ -70,7 +70,7 @@
 .footerLinks { display: flex; gap: 40px; font-size: 14px; color: #eef7f3; }
 .footerLinks a { opacity: .95; }
 .footerLinks a:hover { text-decoration: underline; }
-.footerDivider { border: 0; border-top: 2px solid rgba(255, 255, 255, .22); margin: 4px 0 16px; }
+.footerDivider { border: 0; border-top: 2px solid rgba(255, 255, 255, .22); margin: 4px 0 -3px; }
 .footerCopy { text-align: center; font-size: 13px; color: rgba(238, 247, 243, .65); }
 
 .menuToggle {
@@ -101,6 +101,17 @@
   border-radius: 28px; padding: 15px;
   background: linear-gradient(110deg, #174d49, #205e56); color: #fff !important;
 }
+
+.docHead { margin: 24px 0 26px; }
+.updated { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+.note {
+  background: #f0f6f1; border: 1px solid var(--line); border-left: 4px solid #178a5f;
+  border-radius: 12px; padding: 16px 18px; margin: 0 0 32px;
+  font-size: 14px; line-height: 1.65; color: var(--ink);
+}
+.doc { display: flex; flex-direction: column; gap: 26px; }
+.sectionTitle { font: 700 18px var(--serif); color: var(--ink); margin: 0 0 8px; }
+.sectionText { font-size: 15px; line-height: 1.65; color: var(--muted); margin: 0; }
 
 @media (max-width: 640px) {
   .page { background-image: url('../assets/footer-leaves-mobile.png'); background-size: 100% auto; }

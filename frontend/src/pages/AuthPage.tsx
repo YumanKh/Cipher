@@ -196,11 +196,13 @@ async function handleSubmit(e: FormEvent) {
                 {isRegister && (
                 <div className={styles.formRow}>
                     <label className={styles.check}>
-                    <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
-                    <span>
-                        I agree to the <a className={styles.textLink} href="#">Terms</a> and{' '}
-                        <a className={styles.textLink} href="#">Privacy Policy</a>.
-                    </span>
+                        <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
+                        <span>
+                        I agree to the{' '}
+                        <Link className={styles.textLink} to="/terms" target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>Terms</Link>{' '}
+                        and{' '}
+                        <Link className={styles.textLink} to="/security" target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>Privacy Policy</Link>.
+                        </span>
                     </label>
                 </div>
                 )}
