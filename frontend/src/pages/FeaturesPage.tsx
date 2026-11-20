@@ -36,7 +36,7 @@ export default function FeaturesPage() {
           </Link>
           <nav className={styles.navlinks} aria-label="Main navigation">
             <Link to="/features">Features</Link>
-            <a href="/#security">Security</a>
+            <Link to="/security">Security</Link>
             <Link to="/terms">Terms</Link>
           </nav>
           <div className={styles.navActions}>
@@ -110,7 +110,7 @@ export default function FeaturesPage() {
           <button className={styles.drawerClose} aria-label="Close menu" onClick={closeMenu}>×</button>
         </div>
         <Link to="/features" onClick={closeMenu}>Features</Link>
-        <a href="/#security" onClick={closeMenu}>Security</a>
+        <Link to="/security" onClick={closeMenu}>Security</Link>
         <Link to="/terms" onClick={closeMenu}>Terms</Link>
         <Link to="/login" className={styles.drawerLogin} onClick={closeMenu}>Log in</Link>
         <Link to="/register" className={styles.drawerCta} onClick={closeMenu}>Register</Link>
