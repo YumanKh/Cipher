@@ -70,15 +70,14 @@
   .hero { padding: 24px 20px; }
   .hero h1 { font-size: 27px; }
   .footer {
-    background: linear-gradient(180deg, transparent 0%, transparent 35%, #16382c 100%);
     padding: 150px 22px 30px;
   }
   .footerInner { transform: translateY(33px); }
   .footerTop { gap: 14px; }
-  .footerLogo { width: 28px; height: 28px; }
-  .footerName { font-size: 18px; }
+  .footerLogo { width: 26px; height: 26px; }
+  .footerName { font-size: 15px; }
   .footerTag { display: none; }
-  .footerLinks { gap: 16px; font-size: 11px; }
-  .footerDivider { margin: 5px 0 -5px; }
-  .footerCopy { font-size: 10px; }
+  .footerLinks { gap: 16px; font-size: 8px; }
+  .footerDivider { margin: 3px 0 -3px; }
+  .footerCopy { font-size: 9px; }
 }
