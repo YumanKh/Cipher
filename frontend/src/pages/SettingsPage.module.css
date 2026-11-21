@@ -69,7 +69,10 @@
   .page { background-image: url('../assets/footer-leaves-mobile.png'); background-size: 100% auto; padding: 16px 12px 0; }
   .hero { padding: 24px 20px; }
   .hero h1 { font-size: 27px; }
-  .footer { padding: 150px 22px 30px; }
+  .footer {
+    background: linear-gradient(180deg, transparent 0%, transparent 35%, #16382c 100%);
+    padding: 150px 22px 30px;
+  }
   .footerInner { transform: translateY(33px); }
   .footerTop { gap: 14px; }
   .footerLogo { width: 28px; height: 28px; }
