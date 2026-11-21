@@ -33,3 +33,12 @@ button { font: inherit; }
 ::-webkit-scrollbar-thumb:active { background: rgba(20, 63, 61, .16) !important; }
 .main { scrollbar-width: thin; scrollbar-color: rgba(20, 63, 61, .2) transparent; }
 .detail { scrollbar-width: thin; scrollbar-color: rgba(20, 63, 61, .2) transparent; }
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  user-select: none;
+}
