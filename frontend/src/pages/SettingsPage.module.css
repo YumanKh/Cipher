@@ -66,7 +66,16 @@
 .footerCopy { text-align: center; font-size: 13px; color: rgba(238, 247, 243, .65); }
 
 @media (max-width: 640px) {
-  .page { padding: 16px 12px 48px; }
+  .page { background-image: url('../assets/footer-leaves-mobile.png'); background-size: 100% auto; padding: 16px 12px 0; }
   .hero { padding: 24px 20px; }
   .hero h1 { font-size: 27px; }
+  .footer { padding: 150px 22px 30px; }
+  .footerInner { transform: translateY(33px); }
+  .footerTop { gap: 14px; }
+  .footerLogo { width: 28px; height: 28px; }
+  .footerName { font-size: 18px; }
+  .footerTag { display: none; }
+  .footerLinks { gap: 16px; font-size: 11px; }
+  .footerDivider { margin: 5px 0 -5px; }
+  .footerCopy { font-size: 10px; }
 }

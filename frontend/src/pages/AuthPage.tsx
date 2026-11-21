@@ -201,7 +201,7 @@ async function handleSubmit(e: FormEvent) {
                         I agree to the{' '}
                         <Link className={styles.textLink} to="/terms" target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>Terms</Link>{' '}
                         and{' '}
-                        <Link className={styles.textLink} to="/security" target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>Privacy Policy</Link>.
+                        <Link className={styles.textLink} to="/privacy" target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>Privacy Policy</Link>
                         </span>
                     </label>
                 </div>
@@ -218,16 +218,15 @@ async function handleSubmit(e: FormEvent) {
 
             <p className={styles.terms}>
                 Your information is protected with privacy at its core.{' '}
-                <a href="#">Learn about our approach</a>.
+                <Link to="/security" target="_blank" rel="noreferrer">Learn about our approach</Link>.
             </p>
             </div>
 
             <footer className={styles.footer}>
             <span>© 2026 Yuman Khoufache. All rights reserved.</span>
             <nav className={styles.footerLinks}>
-                <a href="#">Privacy</a>
-                <a href="#">Security</a>
-                <a href="#">Help</a>
+            <Link to="/privacy" target="_blank" rel="noreferrer">Privacy</Link>
+            <Link to="/security" target="_blank" rel="noreferrer">Security</Link>
             </nav>
             </footer>
         </section>

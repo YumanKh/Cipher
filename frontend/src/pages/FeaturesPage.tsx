@@ -5,12 +5,12 @@ import logo from '../assets/logo.png'
 
 const FEATURES = [
   { icon: LockIcon, title: 'Passwords', body: "Save a login once, find it in seconds. Each entry holds a title, website, username, password and notes. Cipher pulls the site's logo straight from its link, and you can reveal or copy any field in one click.", how: 'Add New → Password, fill it in, save.' },
-  { icon: NoteIcon, title: 'Secure notes', body: "Keep private text safe — recovery codes, a passport number, anything you'd rather not leave in a plain notes app.", how: 'Add New → Note, type, save.' },
+  { icon: NoteIcon, title: 'Secure notes', body: "Keep private text safe: recovery codes, a passport number, anything you'd rather not leave in a plain notes app.", how: 'Add New → Note, type, save.' },
   { icon: StarIcon, title: 'Favorites', body: 'Pin what you reach for most. Starred items get their own view, so your daily logins stay one click away.', how: 'Open an item and tap the star, or use the ⋮ menu.' },
   { icon: SearchIcon, title: 'Search & filter', body: 'Find anything instantly by title, or narrow the list to Passwords, Notes or Favorites from the sidebar.' },
-  { icon: TrashIcon, title: 'Trash', body: "Deleting moves an item to Trash first — nothing is lost by accident. Restore it anytime, or delete it permanently once you're sure." },
+  { icon: TrashIcon, title: 'Trash', body: "Deleting moves an item to Trash first, nothing is lost by accident. Restore it anytime, or delete it permanently once you're sure." },
   { icon: DownloadIcon, title: 'Export your vault', body: 'Download a full, decrypted copy of everything as a JSON file whenever you like. Your data is always yours to take.' },
-  { icon: ShieldIcon, title: 'Private by design', body: 'Everything is encrypted on your device before it ever reaches our servers — we never see your master password or your data.' },
+  { icon: ShieldIcon, title: 'Private by design', body: 'Everything is encrypted on your device before it ever reaches our servers, we never see your password or your data.' },
 ]
 
 export default function FeaturesPage() {

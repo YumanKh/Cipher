@@ -4,12 +4,12 @@ import styles from './FeaturesPage.module.css'
 import logo from '../assets/logo.png'
 
 const POINTS = [
-  { icon: EyeOffIcon, title: 'Zero-knowledge by default', body: "Your passwords and notes are encrypted on your device before they ever leave it. Our servers only ever hold encrypted blobs — we can't read your data, and neither can anyone who breaches our servers." },
-  { icon: KeyIcon, title: 'Your master password never leaves your device', body: 'We never receive it. Your device uses it to derive an encryption key locally (PBKDF2, 600,000 iterations), so the password itself is never sent, stored or seen by us.' },
-  { icon: LockIcon, title: 'AES-256 encryption', body: 'Every item is sealed with AES-256-GCM — the standard trusted by banks and governments. Each entry gets its own unique nonce, so no two encrypted values ever look alike.' },
-  { icon: LayersIcon, title: 'Envelope encryption', body: 'Your vault is locked with a random key unique to you. That key is itself wrapped by your master password — so changing your password re-locks the vault instantly, without re-encrypting every item.' },
+  { icon: EyeOffIcon, title: 'Zero-knowledge by default', body: "Your passwords and notes are encrypted on your device before they ever leave it. Our servers only ever hold encrypted blobs, we can't read your data, and neither can anyone who breaches our servers." },
+  { icon: KeyIcon, title: "Your account's password never leaves your device.", body: 'We never receive it. Your device uses it to derive an encryption key locally, so the password itself is never sent, stored or seen by us.' },
+  { icon: LockIcon, title: 'AES-256 encryption', body: 'Every item is sealed with AES-256-GCM, the standard trusted by banks and governments. Each entry gets its own unique nonce, so no two encrypted values ever look alike.' },
+  { icon: LayersIcon, title: 'Envelope encryption', body: "Your vault is locked with a random key unique to you. That key is itself wrapped by your account's password, so changing your password re-locks the vault instantly, without re-encrypting every item." },
   { icon: AlertIcon, title: "We can't recover your master password", body: "Because we never see it, there's no reset link that can unlock your vault. That's the honest trade-off of real privacy: only you hold the key, so keep it somewhere safe." },
-  { icon: ShieldIcon, title: 'Secure sessions', body: "You stay signed in through a token kept in a secure, httpOnly cookie that scripts can't read. Reload the app and your vault re-locks until you enter your master password again." },
+  { icon: ShieldIcon, title: 'Secure sessions', body: "You stay signed in through a token kept in a secure httpOnly cookie that scripts can't read. Reload the app and your vault re-locks until you enter your master password again." },
 ]
 
 export default function SecurityPage() {

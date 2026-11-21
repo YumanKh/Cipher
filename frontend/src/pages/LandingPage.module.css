@@ -109,7 +109,8 @@
 
 /* ---------- FEATURES ---------- */
 .features {
-  min-height: 374px; padding: 25px clamp(28px, 5.8vw, 90px) 120px;
+  min-height: 374px;
+  padding: 105px clamp(28px, 5.8vw, 90px) 40px;
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;
   position: relative; isolation: isolate; overflow: hidden;
 }
@@ -137,7 +138,7 @@
 /* ---------- FOOTER ---------- */
 .footer {
   position: relative; z-index: 1;
-  padding: 120px clamp(28px, 5.2vw, 80px) 1px;
+  padding: 90px clamp(28px, 5.2vw, 80px) 1px;
   color: #f4faf6;
   background: transparent;
 }
@@ -197,7 +198,7 @@
   .trustItem { gap: 5px; }
   .trustIcon { width: 17px; height: 20px; }
   .trustIcon svg { width: 18px; height: 20px; }
-  .features { grid-template-columns: 1fr; gap: 13px; padding: 22px 19px 24px; }
+  .features { grid-template-columns: 1fr; gap: 13px; padding: 80px 19px 12px; }
   .feature {
     display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 16px;
     min-height: 0; padding: 18px; border-radius: 16px;
@@ -210,7 +211,7 @@
   .footer {
     position: relative; z-index: 1;
     background: transparent;
-    padding: 150px 22px 30px;
+    padding: 80px 22px 30px;   /* 150 → 120 */
   }
   .footerTop { gap: 14px; }
   .footerLogo { width: 28px; height: 28px; }

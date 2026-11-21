@@ -55,7 +55,7 @@ export default function LandingPage() {
               <p className={styles.eyebrow}>Privacy for a brighter tomorrow</p>
               <h1 className={styles.heroTitle}>Your digital life,<br />protected.</h1>
               <p className={styles.heroCopy}>
-                Passwords, private notes, and the little things you never want to lose — all in one calm, secure place.
+                Passwords and private notes, all the little things you never want to lose — all in one unique, secure place.
               </p>
               <div className={styles.heroButtons}>
                 <Link className={styles.cta} to="/register">Create your free vault</Link>
@@ -127,9 +127,9 @@ export default function LandingPage() {
                 </span>
               </a>
               <nav className={styles.footerlinks} aria-label="Footer navigation">
-                <a href="#privacy">Privacy</a>
-                <a href="#security">Security</a>
-                <a href="#help">Help</a>
+                <Link to="/privacy">Privacy</Link>
+                <Link to="/security">Security</Link>
+                <Link to="/terms">Terms</Link>
               </nav>
             </div>
             <hr className={styles.footerDivider} />

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import styles from './SettingsPage.module.css'
 import { useAuthStore } from '../stores/authStore'
 import logo from '../assets/logo.png'
@@ -86,9 +86,9 @@ export default function SettingsPage() {
               </span>
             </div>
             <nav className={styles.footerLinks}>
-              <a href="#privacy">Privacy</a>
-              <a href="#security">Security</a>
-              <a href="#help">Help</a>
+              <Link to="/privacy" target="_blank" rel="noreferrer">Privacy</Link>
+              <Link to="/security" target="_blank" rel="noreferrer">Security</Link>
+              <Link to="/terms" target="_blank" rel="noreferrer">Terms</Link>
             </nav>
           </div>
           <hr className={styles.footerDivider} />
