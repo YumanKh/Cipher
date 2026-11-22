@@ -55,7 +55,7 @@ export default function LandingPage() {
               <p className={styles.eyebrow}>Privacy for a brighter tomorrow</p>
               <h1 className={styles.heroTitle}>Your digital life,<br />protected.</h1>
               <p className={styles.heroCopy}>
-                Passwords and private notes, all the little things you never want to lose — all in one unique, secure place.
+                Passwords and private notes, all the things you never want to lose — all in one unique, secure place.
               </p>
               <div className={styles.heroButtons}>
                 <Link className={styles.cta} to="/register">Create your free vault</Link>

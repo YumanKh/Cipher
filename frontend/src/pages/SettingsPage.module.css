@@ -67,6 +67,8 @@
 
 @media (max-width: 640px) {
   .page { background-image: url('../assets/footer-leaves-mobile.png'); background-size: 100% auto; padding: 16px 12px 0; }
+  .hero { background: #e9f0ea; }
+  .hero::before { display: none; }
   .hero { padding: 24px 20px; }
   .hero h1 { font-size: 27px; }
   .footer {

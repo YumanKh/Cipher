@@ -16,6 +16,9 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+html, body {
+  overflow-x: hidden;
+}
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
