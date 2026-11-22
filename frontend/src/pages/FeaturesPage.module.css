@@ -127,9 +127,9 @@
   .card { flex-direction: column; gap: 12px; padding: 18px; }
   .footer {
     background: transparent;
-    padding: 150px 22px 30px;
+    padding: 145px 22px 30px;
   }
-  .footerTop { gap: 14px; }
+  .footerTop { display: none; }
   .footerLogo { width: 28px; height: 28px; }
   .footerName { font-size: 18px; }
   .footerTag { display: none; }

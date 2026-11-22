@@ -70,10 +70,10 @@
   .hero { padding: 24px 20px; }
   .hero h1 { font-size: 27px; }
   .footer {
-    padding: 150px 22px 30px;
+    padding: 145px 22px 30px;
   }
   .footerInner { transform: translateY(33px); }
-  .footerTop { gap: 14px; }
+  .footerTop { display: none; }
   .footerLogo { width: 26px; height: 26px; }
   .footerName { font-size: 15px; }
   .footerTag { display: none; }
