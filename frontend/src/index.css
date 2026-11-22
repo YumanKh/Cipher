@@ -11,6 +11,11 @@
 }
 
 * { box-sizing: border-box; }
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
@@ -37,10 +42,6 @@ button { font: inherit; }
 ::-webkit-scrollbar-thumb:active { background: rgba(20, 63, 61, .16) !important; }
 .main { scrollbar-width: thin; scrollbar-color: rgba(20, 63, 61, .2) transparent; }
 .detail { scrollbar-width: thin; scrollbar-color: rgba(20, 63, 61, .2) transparent; }
-
-* {
-  -webkit-tap-highlight-color: transparent;
-}
 
 button,
 a {

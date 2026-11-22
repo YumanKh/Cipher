@@ -18,7 +18,6 @@ const NAV = [
   { id: 'passwords', label: 'Passwords', icon: PasswordsIcon },
   { id: 'notes', label: 'Notes', icon: NotesIcon },
   { id: 'favorites', label: 'Favorites', icon: StarIcon },
-  { id: 'trash', label: 'Trash', icon: TrashIcon },
 ]
 
 type DecryptedFields = { username?: string; password?: string; notes?: string }
@@ -185,6 +184,7 @@ export default function VaultPage() {
               <div className={styles.userBackdrop} onClick={() => setUserMenu(false)} />
               <div className={styles.userMenu}>
                 <button className={styles.userMenuItem} onClick={() => { setUserMenu(false); navigate('/settings') }}><SettingsIcon /> Settings</button>
+                <button className={styles.userMenuItem} onClick={() => { setUserMenu(false); setCategory('trash') }}><TrashIcon /> Trash</button>
                 <button className={`${styles.userMenuItem} ${styles.userMenuDanger}`} onClick={() => { setUserMenu(false); setConfirmLogout(true) }}><LogoutIcon /> Logout</button>
               </div>
             </>
