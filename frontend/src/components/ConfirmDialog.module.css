@@ -9,9 +9,9 @@
   font-size: 14px; font-weight: 600; cursor: pointer;
 }
 .cancel { border: 1px solid var(--line); background: #fcfdfb; color: var(--ink); }
-.cancel:hover { background: #f1f5f1; }
+.cancel:hover, .cancel:active { background: #f1f5f1; }
 .confirm { border: 1px solid #f3d4d1; background: #fdf1f0; color: #c4453d; }
-.confirm:hover { background: #fbe6e4; }
+.confirm:hover, .confirm:active { background: #fbe6e4; }
 .confirm:disabled { opacity: .6; cursor: default; }
 .confirmNeutral { border: 0; background: #16514c; color: #fff; }
-.confirmNeutral:hover { background: #123f3b; }
+.confirmNeutral:hover, .confirmNeutral:active { background: #123f3b; }

@@ -42,7 +42,7 @@
   box-shadow: 0 5px 14px rgba(23, 79, 75, .08);
   transition: transform .2s, box-shadow .2s; cursor: pointer;
 }
-.cta:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(23, 79, 75, .16); }
+.cta:hover, .cta:active { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(23, 79, 75, .16); }
 .arrow { font-size: 19px; line-height: 0; }
 
 /* ---------- MOBILE MENU (caché en desktop) ---------- */
@@ -101,7 +101,7 @@
   color: #174846; background: rgba(248, 250, 246, .45); font-size: 15px;
   transition: background .2s, transform .2s, box-shadow .2s;
 }
-.secondary:hover { background: #fff; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(23, 79, 75, .14); }
+.secondary:hover, .secondary:active { background: #fff; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(23, 79, 75, .14); }
 .trustline { display: flex; gap: 28px; align-items: center; margin-top: 28px; color: #376b68; font-size: 13px; }
 .trustItem { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 .trustIcon { width: 22px; height: 25px; display: inline-grid; place-items: center; color: #2d746a; }

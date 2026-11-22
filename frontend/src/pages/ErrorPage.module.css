@@ -10,4 +10,4 @@
 .title { font: 700 30px var(--serif); color: var(--ink); margin: 6px 0 8px; }
 .message { font-size: 14px; line-height: 1.55; color: var(--muted); margin: 0 0 20px; max-width: 360px; }
 .button { border: 0; background: #16514c; color: #fff; height: 46px; padding: 0 26px; border-radius: 13px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s; }
-.button:hover { background: #123f3b; }
+.button:hover, .button:active { background: #123f3b; }

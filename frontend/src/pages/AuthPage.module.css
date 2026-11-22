@@ -45,17 +45,17 @@
 .check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
 .check input { accent-color: #23635c; width: 14px; height: 14px; }
 .textLink { color: #27675f; font-weight: 700; }
-.textLink:hover { text-decoration: underline; }
+.textLink:hover, .textLink:active { text-decoration: underline; }
 
 .submit { width: 100%; height: 51px; border: 0; border-radius: 11px; background: linear-gradient(135deg, #286a62, #16494a); color: #fff; font-weight: 700; font-size: 14px; box-shadow: 0 8px 18px rgba(24,79,75,.16); transition: transform .18s, box-shadow .18s; cursor: pointer; }
-.submit:hover { transform: translateY(-1px); box-shadow: 0 12px 23px rgba(24,79,75,.22); }
+.submit:hover, .submit:active { transform: translateY(-1px); box-shadow: 0 12px 23px rgba(24,79,75,.22); }
 .submit:disabled { opacity: .6; cursor: default; transform: none; box-shadow: none; }
 
 .separator { display: flex; align-items: center; gap: 13px; color: #91a6a0; font-size: 11px; margin: 23px 0; }
 .separator::before, .separator::after { content: ""; height: 1px; background: #dfe9e4; flex: 1; }
 
 .secondary { display: flex; align-items: center; justify-content: center; width: 100%; height: 47px; border: 1px solid #d5e3dd; border-radius: 10px; background: rgba(255,255,255,.5); color: #315c5b; font-size: 13px; font-weight: 650; cursor: pointer; }
-.secondary:hover { background: #fff; }
+.secondary:hover, .secondary:active { background: #fff; }
 
 .terms { font-size: 11px; line-height: 1.6; text-align: center; color: #8aa09b; margin: 19px 0 0; }
 .terms a { color: #47776f; text-decoration: underline; text-underline-offset: 2px; }

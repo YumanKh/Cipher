@@ -50,8 +50,8 @@
   cursor: pointer; transition: background .15s, color .15s; text-align: left;
 }
 .navItem svg { width: 20px; height: 20px; }
-.navItem:hover { background: rgba(255, 255, 255, .14); }
-.navActive, .navActive:hover {
+.navItem:hover, .navItem:active { background: rgba(255, 255, 255, .14); }
+.navActive, .navActive:hover, .navActive:active {
   background: rgba(255, 255, 255, .12);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
@@ -96,7 +96,7 @@
   display: flex; align-items: center; gap: 10px;
   padding: 4px 8px; border-radius: 12px;
 }
-.user:hover { background: #eef2ee; }
+.user:hover, .user:active { background: #eef2ee; }
 .user svg { width: 16px; height: 16px; color: var(--muted); stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 .userBackdrop { position: fixed; inset: 0; z-index: 9; }
@@ -118,10 +118,10 @@
   border: 0; background: transparent; text-align: left; padding: 10px 12px;
   border-radius: 8px; font-size: 14px; color: var(--ink); cursor: pointer;
 }
-.userMenuItem:hover { background: #f1f5f1; }
+.userMenuItem:hover, .userMenuItem:active { background: #f1f5f1; }
 .userMenuItem svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .userMenuDanger { color: #c4453d; }
-.userMenuDanger:hover { background: #fdf1f0; }
+.userMenuDanger:hover, .userMenuDanger:active { background: #fdf1f0; }
 .avatar { width: 40px; height: 40px; border-radius: 50%; background: #16514c; color: #fff; display: grid; place-items: center; font-size: 14px; font-weight: 600; }
 .userName { font-size: 14px; font-weight: 500; color: var(--ink); }
 
@@ -160,7 +160,7 @@
   background: #16514c; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
   transition: background .15s;
 }
-.addNew:hover { background: #123f3b; }
+.addNew:hover, .addNew:active { background: #123f3b; }
 .addNew svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
 
 /* Recent */
@@ -188,7 +188,7 @@
   content: ""; position: absolute; left: 18px; right: 18px; bottom: 0; height: 1px; background: var(--line);
 }
 .item:last-child::after { display: none; }
-.item:hover { background: #f3f6f2; }
+.item:hover, .item:active { background: #f3f6f2; }
 .item:first-child { border-radius: 18px 18px 0 0; }
 .item:last-child { border-radius: 0 0 18px 18px; }
 .itemIcon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: #fff; color: var(--ink); font: 600 18px var(--serif); }
@@ -201,7 +201,7 @@
 .itemTime { font-size: 13px; color: var(--muted); white-space: nowrap; }
 .itemMenuWrap { position: relative; display: grid; place-items: center; }
 .itemMenu { border: 0; background: transparent; cursor: pointer; display: grid; place-items: center; width: 28px; height: 28px; color: var(--muted); border-radius: 8px; }
-.itemMenu:hover { background: #e9efe9; }
+.itemMenu:hover, .itemMenu:active { background: #e9efe9; }
 .itemMenu svg { width: 18px; height: 18px; }
 .menu {
   position: absolute; top: 34px; right: 0; z-index: 5;
@@ -212,9 +212,9 @@
   animation: dropIn .14s ease;
 }
 .menuItem { border: 0; background: transparent; text-align: left; padding: 9px 12px; border-radius: 8px; font-size: 14px; color: var(--ink); cursor: pointer; }
-.menuItem:hover { background: #f1f5f1; }
+.menuItem:hover, .menuItem:active { background: #f1f5f1; }
 .menuDanger { color: #c4453d; }
-.menuDanger:hover { background: #fdf1f0; }
+.menuDanger:hover, .menuDanger:active { background: #fdf1f0; }
 .itemMenu svg { width: 18px; height: 18px; }
 
 /* DETAIL PANEL */
@@ -231,7 +231,7 @@
 .detailDomain { font-size: 13px; color: var(--muted); }
 
 .iconBtn { width: 34px; height: 34px; border: 0; background: transparent; border-radius: 10px; display: grid; place-items: center; color: var(--muted); cursor: pointer; }
-.iconBtn:hover { background: #eef2ee; }
+.iconBtn:hover, .iconBtn:active { background: #eef2ee; }
 .iconBtn svg { width: 20px; height: 20px; }
 .favBtn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .starBtn { color: #e6a93b; }
@@ -252,7 +252,7 @@
 .fieldValue { flex: 1; font-size: 15px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fieldLink { flex: 1; font-size: 15px; color: #2f7df0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .copyBtn { width: 32px; height: 32px; border: 0; background: transparent; border-radius: 9px; display: grid; place-items: center; color: var(--muted); cursor: pointer; flex-shrink: 0; }
-.copyBtn:hover { background: #eef2ee; }
+.copyBtn:hover, .copyBtn:active { background: #eef2ee; }
 
 .notesCard { background: #fcfdfb; border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; }
 .notesHead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; color: var(--muted); }
@@ -264,9 +264,9 @@
 .detailActions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .editBtn, .deleteBtn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 46px; border-radius: 13px; font-size: 14px; font-weight: 600; cursor: pointer; }
 .editBtn { border: 1px solid var(--line); background: #fcfdfb; color: var(--ink); }
-.editBtn:hover { background: #f1f5f1; }
+.editBtn:hover, .editBtn:active { background: #f1f5f1; }
 .deleteBtn { border: 1px solid #f3d4d1; background: #fdf1f0; color: #c4453d; }
-.deleteBtn:hover { background: #fbe6e4; }
+.deleteBtn:hover, .deleteBtn:active { background: #fbe6e4; }
 
 .detailBanner { margin-top: auto; height: 150px; border-radius: 18px; background: url('../assets/protect-banner.png') no-repeat center / cover; }
 
