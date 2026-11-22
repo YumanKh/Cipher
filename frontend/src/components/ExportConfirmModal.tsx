@@ -33,7 +33,7 @@ export default function ExportConfirmModal({ onClose }: Props) {
         {error && <p className={styles.error}>{error}</p>}
         <div className={styles.actions}>
           <button className={styles.cancel} onClick={onClose} disabled={busy}>Cancel</button>
-          <button className={styles.save} onClick={download} disabled={busy}>{busy ? 'Exporting…' : 'I understand, download'}</button>
+          <button className={styles.save} onClick={download} disabled={busy}>{busy ? 'Exporting…' : 'Download'}</button>
         </div>
       </div>
     </div>
