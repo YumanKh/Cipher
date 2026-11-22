@@ -4,6 +4,8 @@ import { loginSchema, registerSchema, preloginSchema } from "../../schemas/auth.
 import { Prisma } from "@prisma/client";
 import { config } from "../../config.js";
 
+const isProd = config.NODE_ENV === "production";
+
 export const register = async (req: Request, res: Response) => {
     const result = registerSchema.safeParse(req.body);
 
@@ -17,7 +19,7 @@ export const register = async (req: Request, res: Response) => {
     try {
         const { user, tokens } = await registerUser(userData);
 
-        res.status(201).cookie("refreshToken", tokens.refreshToken, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict", path: "/auth", maxAge: 30 * 24 * 60 * 60 * 1000 }).json({ user, accessToken: tokens.accessToken });
+        res.status(201).cookie("refreshToken", tokens.refreshToken, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: isProd ? 'none' : 'strict', path: "/auth", maxAge: 30 * 24 * 60 * 60 * 1000 }).json({ user, accessToken: tokens.accessToken });
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
             res.status(409).json({ error: "User with this email already exists" });
@@ -67,7 +69,7 @@ export const login = async (req: Request, res: Response) => {
             return;
         }
 
-        res.status(200).cookie("refreshToken", loggedUser.tokens.refreshToken, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict", path: "/auth", maxAge: 30 * 24 * 60 * 60 * 1000 }).json({ user: loggedUser.user, accessToken: loggedUser.tokens.accessToken });
+        res.status(200).cookie("refreshToken", loggedUser.tokens.refreshToken, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: isProd ? 'none' : 'strict', path: "/auth", maxAge: 30 * 24 * 60 * 60 * 1000 }).json({ user: loggedUser.user, accessToken: loggedUser.tokens.accessToken });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
@@ -104,7 +106,7 @@ export const refresh = async (req: Request, res: Response) => {
             return;
         }
 
-        res.status(200).cookie("refreshToken", refreshedTokens.tokens.refreshToken, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict", path: "/auth", maxAge: 30 * 24 * 60 * 60 * 1000 }).json({ accessToken: refreshedTokens.tokens.accessToken, user: refreshedTokens.user });
+        res.status(200).cookie("refreshToken", refreshedTokens.tokens.refreshToken, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: isProd ? 'none' : 'strict', path: "/auth", maxAge: 30 * 24 * 60 * 60 * 1000 }).json({ accessToken: refreshedTokens.tokens.accessToken, user: refreshedTokens.user });
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }

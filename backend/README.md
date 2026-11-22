@@ -104,8 +104,7 @@ Authentication uses an `authValue` derived on the client. The server hashes it w
 
 ## Authentication and sessions
 
-- **Access token:** short-lived JWT (15 minutes), sent as `Authorization: Bearer <token>`. The client keeps it in memory.
-- **Refresh token:** random value stored **hashed** in the database and sent in an `httpOnly` cookie (`sameSite=strict`, `path=/auth`, `secure` in production, 30 days).
+- **Refresh token:** random value stored **hashed** in the database and sent in an `httpOnly` cookie (`path=/auth`, 30 days). The `sameSite` and `secure` flags adapt to the environment: `sameSite=none` with `secure` in production (the client and API are served from different origins), and `sameSite=strict` in development.
 - **Rotation:** each refresh issues a new refresh token and invalidates the old one. Reusing an old token fails.
 - **Logout:** deletes the refresh token from the database.
 
@@ -115,7 +114,7 @@ Authentication uses an `authValue` derived on the client. The server hashes it w
 - **The user id comes from the verified token**, never from the body or the URL.
 - **Input validation** with Zod on every route. Validation errors are never leaked to the client.
 - **Passwords:** `authValue` hashed with bcrypt. Refresh tokens hashed with SHA-256.
-- **Cookies:** `httpOnly`, `sameSite=strict`, restricted path.
+- **Cookies:** `httpOnly`, restricted path, and environment-aware `sameSite` — `none` + `secure` in production for the cross-origin client, `strict` in development.
 - **helmet**, **CORS** limited to the configured front-end origin with credentials, and **rate limiting** on authentication routes.
 - **Cascade deletes:** deleting an account removes its notes, passwords and refresh tokens.
 - **Account deletion and password change** require the current `authValue`.
